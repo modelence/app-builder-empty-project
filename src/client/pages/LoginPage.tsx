@@ -29,7 +29,7 @@ function LoginForm() {
   }, []);
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+    <Card className="w-full max-w-sm mx-auto bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       <CardHeader className="text-center">
         <CardTitle className="text-xl">
           Sign in to your account
