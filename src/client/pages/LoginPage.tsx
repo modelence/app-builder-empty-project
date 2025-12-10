@@ -55,12 +55,12 @@ function LoginForm() {
               <Label htmlFor="password">
                 Password
               </Label>
-              <Link
+              {/* <Link
                 to="reset-password"
                 className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
               >
                 Forgot your password?
-              </Link>
+              </Link> */}
             </div>
             <Input 
               type="password" 
