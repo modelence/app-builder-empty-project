@@ -10,4 +10,16 @@ export const router = createBrowserRouter([
     path: '/example/:itemId',
     Component: lazy(() => import('./pages/ExamplePage'))
   },
+  {
+    path: '/login',
+    Component: lazy(() => import('./pages/LoginPage'))
+  },
+  {
+    path: '/signup',
+    Component: lazy(() => import('./pages/SignupPage'))
+  },
+  {
+    path: '/terms',
+    Component: lazy(() => import('./pages/TermsPage'))
+  }
 ]);
