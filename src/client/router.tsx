@@ -53,6 +53,10 @@ const publicRoutes: RouteObject[] = [
   {
     path: '/logout',
     Component: lazy(() => import('./pages/LogoutPage'))
+  },
+  {
+    path: '*',
+    Component: lazy(() => import('./pages/NotFoundPage'))
   }
 ];
 
@@ -87,4 +91,3 @@ export const router = createBrowserRouter([
     children: privateRoutes
   }
 ]);
-
