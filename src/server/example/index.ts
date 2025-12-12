@@ -2,6 +2,7 @@ import z from 'zod';
 import { AuthError } from 'modelence';
 import { Module, ObjectId, UserInfo, getConfig } from 'modelence/server';
 import { dbExampleItems } from './db';
+import { dailyTestCron } from './cron';
 
 export default new Module('example', {
   configSchema: {
@@ -77,5 +78,9 @@ export default new Module('example', {
         throw new Error('Item not found');
       }
     },
+  },
+
+  cronJobs: {
+    dailyTest: dailyTestCron
   }
 });
