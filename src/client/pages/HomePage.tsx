@@ -6,7 +6,6 @@ export default function HomePage() {
     <Page className="bg-gray-100">
       <div className="max-w-6xl mx-auto flex-1 flex items-center justify-center">
         <PlaceholderView />
-
       </div>
     </Page>
   );
