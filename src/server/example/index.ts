@@ -40,7 +40,9 @@ export default new Module('example', {
       }
 
       const itemsPerPage = getConfig('example.itemsPerPage') as number;
-      const exampleItems = await dbExampleItems.fetch({}, { limit: itemsPerPage })
+      const exampleItems = await dbExampleItems.fetch({
+        userId: new ObjectId(user.id),
+      }, { limit: itemsPerPage })
       return exampleItems.map((item) => ({
         _id: item._id.toString(),
         title: item.title,
