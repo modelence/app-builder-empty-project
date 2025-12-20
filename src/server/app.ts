@@ -1,6 +1,13 @@
 import { startApp } from 'modelence/server';
 import exampleModule from '@/server/example';
+import { createDemoUser } from '@/server/migrations/createDemoUser';
 
 startApp({
-    modules: [exampleModule /* Add your modules here */]
+  modules: [exampleModule /* Add your modules here */],
+
+  migrations: [{
+    version: 1,
+    description: 'Create demo user',
+    handler: createDemoUser,
+  }],
 });

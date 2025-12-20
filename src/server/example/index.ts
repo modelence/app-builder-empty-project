@@ -6,6 +6,16 @@ import { dailyTestCron } from './cron';
 
 export default new Module('example', {
   configSchema: {
+    modelenceDemoUsername: {
+      type: 'string',
+      default: 'demo@modelence.dev',
+      isPublic: true,
+    },
+    modelenceDemoPassword: {
+      type: 'string',
+      default: '12345678',
+      isPublic: true,
+    },
     itemsPerPage: {
       type: 'number',
       default: 5,

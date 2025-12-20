@@ -26,7 +26,7 @@ function Header() {
         </Button>
       </Link>
 
-      {user && (
+      {user ? (
         <div className="flex items-center gap-3">
           <span className="text-sm text-gray-600 dark:text-gray-400">
             {user.handle}
@@ -37,6 +37,12 @@ function Header() {
             </Button>
           </Link>
         </div>
+      ) : (
+        <Link to="/login">
+          <Button variant="outline">
+            Sign in
+          </Button>
+        </Link>
       )}
     </header>
   );
