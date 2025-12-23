@@ -7,10 +7,12 @@ import { Link } from 'react-router-dom';
 import { useSession } from 'modelence/client';
 import LoadingSpinner from '@/client/components/LoadingSpinner';
 import { Button } from '@/client/components/ui/Button';
+import { cn } from '@/client/lib/utils';
 
 interface PageProps {
   children?: React.ReactNode;
   isLoading?: boolean;
+  className?: string;
 }
 
 function Header() {
@@ -24,7 +26,7 @@ function Header() {
         </Button>
       </Link>
 
-      {user && (
+      {user ? (
         <div className="flex items-center gap-3">
           <span className="text-sm text-gray-600 dark:text-gray-400">
             {user.handle}
@@ -35,6 +37,12 @@ function Header() {
             </Button>
           </Link>
         </div>
+      ) : (
+        <Link to="/login">
+          <Button variant="outline">
+            Sign in
+          </Button>
+        </Link>
       )}
     </header>
   );
@@ -44,10 +52,10 @@ function PageWrapper({ children }: { children: React.ReactNode }) {
   return <div className="flex flex-col min-h-screen max-w-full overflow-x-hidden">{children}</div>;
 }
 
-function PageBody({ children, isLoading = false }: PageProps) {
+function PageBody({ children, className, isLoading = false }: PageProps) {
   return (
-    <div className="flex flex-1 w-full">
-      <main className="flex-1 p-4 space-y-4 overflow-x-hidden">
+    <div className="flex flex-1 w-full min-h-0">
+      <main className={cn("flex flex-col flex-1 p-4 space-y-4 overflow-x-hidden", className)}>
         {isLoading ? (
           <div className="flex items-center justify-center w-full h-full">
             <LoadingSpinner />
@@ -60,11 +68,11 @@ function PageBody({ children, isLoading = false }: PageProps) {
   );
 }
 
-export default function Page({ children, isLoading = false }: PageProps) {
+export default function Page({ children, className, isLoading = false }: PageProps) {
   return (
     <PageWrapper>
       <Header />
-      <PageBody isLoading={isLoading}>{children}</PageBody>
+      <PageBody className={className} isLoading={isLoading}>{children}</PageBody>
     </PageWrapper>
   );
 }

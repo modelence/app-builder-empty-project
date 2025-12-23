@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { loginWithPassword } from 'modelence/client';
+import { getConfig, loginWithPassword } from 'modelence/client';
 import { Button } from '@/client/components/ui/Button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/client/components/ui/Card';
 import { Input } from '@/client/components/ui/Input';
@@ -45,7 +45,8 @@ function LoginForm() {
             <Input 
               type="email" 
               name="email" 
-              id="email" 
+              id="email"
+              defaultValue={getConfig('example.modelenceDemoUsername') as string | undefined}
               required
             />
           </div>
@@ -66,6 +67,7 @@ function LoginForm() {
               type="password" 
               name="password" 
               id="password" 
+              defaultValue={getConfig('example.modelenceDemoPassword') as string | undefined}
               required
             />
           </div>

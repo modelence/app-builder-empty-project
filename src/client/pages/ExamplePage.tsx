@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { modelenceQuery, createQueryKey } from '@modelence/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { modelenceQuery, modelenceMutation, createQueryKey } from '@modelence/react-query';
 
 type ExampleItem = {
   title: string;
@@ -15,6 +15,10 @@ export default function ExamplePage() {
   const { data, isLoading, error } = useQuery({
     ...modelenceQuery<ExampleItem>('example.getItem', { itemId }),
     enabled: !!itemId,
+  });
+
+  const { mutate: createItem, isPending: isCreatingItem } = useMutation({
+    ...modelenceMutation('example.createItem'),
   });
 
   const invalidateItem = useCallback(() => {
@@ -33,6 +37,7 @@ export default function ExamplePage() {
         </>
       )}
       <button onClick={invalidateItem}>Invalidate Item</button>
+      <button onClick={() => createItem({ title: 'New Item' })} disabled={isCreatingItem}>Create Item</button>
     </div>
   );
 }
