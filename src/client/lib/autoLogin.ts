@@ -20,8 +20,9 @@ export function useAutoLogin() {
 
     if (email && password) {
       attemptedRef.current = true;
-      localStorage.setItem(AUTO_LOGIN_DISABLED_KEY, '1');
-        loginWithPassword({ email, password }).catch((error) => {
+      loginWithPassword({ email, password }).then(() => {
+        localStorage.setItem(AUTO_LOGIN_DISABLED_KEY, '1');
+      }).catch((error) => {
         console.error('Auto-login failed:', error);
       });
     }
