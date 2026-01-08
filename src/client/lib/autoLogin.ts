@@ -24,6 +24,7 @@ export function useAutoLogin() {
         localStorage.setItem(AUTO_LOGIN_DISABLED_KEY, '1');
       }).catch((error) => {
         console.error('Auto-login failed:', error);
+        attemptedRef.current = false; // Allow retry on failure
       });
     }
   }, [user]);
