@@ -213,7 +213,6 @@ npm test             # Run tests (not configured)
 
 - **Tailwind CSS**: Configured with `src/client/**/*.{js,jsx,ts,tsx}` content paths
 - **PostCSS**: Enabled with autoprefixer
-- **Dark Mode**: Supported in all components (dark: prefixed classes)
 - **Color Scheme**: Gray, black, white primary colors; blue, red accents
 
 ### 10. AVAILABLE PATTERNS FOR TODO LIST FORM

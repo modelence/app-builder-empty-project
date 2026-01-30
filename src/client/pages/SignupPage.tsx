@@ -44,7 +44,7 @@ function SignupForm() {
 
   if (isSignupSuccess) {
     return (
-      <Card className="w-full max-w-sm mx-auto bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+      <Card className="w-full max-w-sm mx-auto bg-white text-gray-900">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">
             Account created
@@ -52,7 +52,7 @@ function SignupForm() {
         </CardHeader>
         
         <CardContent className="flex flex-col items-center gap-4">
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             Your account has been created successfully.
           </p>
           <Link to="/login" className="w-full">
@@ -66,7 +66,7 @@ function SignupForm() {
   }
 
   return (
-    <Card className="w-full max-w-sm mx-auto bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+    <Card className="w-full max-w-sm mx-auto bg-white text-gray-900">
       <CardHeader className="text-center">
         <CardTitle className="text-xl">
           Create an account
@@ -117,13 +117,13 @@ function SignupForm() {
                 id="consent-terms"
                 type="checkbox"
                 name="consent-terms"
-                className="w-4 h-4 border border-gray-300 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-800 focus:ring-3 focus:ring-blue-300 dark:focus:ring-blue-600"
+                className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
                 required
               />
             </div>
             <div className="ml-3 text-sm">
-              <Label htmlFor="consent-terms" className="text-gray-600 dark:text-gray-400">
-                I accept the <a className="font-medium text-blue-600 dark:text-blue-400 hover:underline" href="/terms" target="_blank">Terms and Conditions</a>
+              <Label htmlFor="consent-terms" className="text-gray-600">
+                I accept the <a className="font-medium text-blue-600 hover:underline" href="/terms" target="_blank">Terms and Conditions</a>
               </Label>
             </div>
           </div>
@@ -138,11 +138,11 @@ function SignupForm() {
       </CardContent>
 
       <CardFooter className="justify-center">
-        <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-center text-sm text-gray-600">
           Already have an account?{' '}
           <Link
             to="/login"
-            className="text-gray-900 dark:text-white underline hover:no-underline font-medium"
+            className="text-gray-900 underline hover:no-underline font-medium"
           >
             Sign in here
           </Link>

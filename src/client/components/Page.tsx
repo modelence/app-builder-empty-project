@@ -19,7 +19,7 @@ function Header() {
   const { user } = useSession();
 
   return (
-    <header className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+    <header className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
       <Link to="/">
         <Button variant="ghost">
           Home
@@ -28,7 +28,7 @@ function Header() {
 
       {user ? (
         <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-600 dark:text-gray-400">
+          <span className="text-sm text-gray-600">
             {user.handle}
           </span>
           <Link to="/logout">
