@@ -4,6 +4,7 @@ import { Button } from '@/client/components/ui/Button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/client/components/ui/Card';
 import { Input } from '@/client/components/ui/Input';
 import { Label } from '@/client/components/ui/Label';
+import { Checkbox } from '@/client/components/ui/Checkbox';
 import { Link } from 'react-router-dom';
 import Page from '@/client/components/Page';
 import { toast } from 'react-hot-toast';
@@ -111,18 +112,14 @@ function SignupForm() {
             />
           </div>
 
-          <div className="flex items-start">
-            <div className="flex items-center h-5">
-              <input
-                id="consent-terms"
-                type="checkbox"
-                name="consent-terms"
-                className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
-                required
-              />
-            </div>
-            <div className="ml-3 text-sm">
-              <Label htmlFor="consent-terms" className="text-gray-600">
+          <div className="flex items-start space-x-3">
+            <Checkbox
+              id="consent-terms"
+              name="consent-terms"
+              required
+            />
+            <div className="space-y-1 leading-none">
+              <Label htmlFor="consent-terms" className="text-sm text-gray-600 cursor-pointer">
                 I accept the <a className="font-medium text-blue-600 hover:underline" href="/terms" target="_blank">Terms and Conditions</a>
               </Label>
             </div>
