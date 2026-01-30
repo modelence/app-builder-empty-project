@@ -29,7 +29,7 @@ function LoginForm() {
   }, []);
 
   return (
-    <Card className="w-full max-w-sm mx-auto bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+    <Card className="w-full max-w-sm mx-auto bg-white">
       <CardHeader className="text-center">
         <CardTitle className="text-xl">
           Sign in to your account
@@ -58,7 +58,7 @@ function LoginForm() {
               </Label>
               {/* <Link
                 to="reset-password"
-                className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                className="text-sm text-gray-600"
               >
                 Forgot your password?
               </Link> */}
@@ -82,11 +82,11 @@ function LoginForm() {
       </CardContent>
 
       <CardFooter className="justify-center">
-        <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-center text-sm text-gray-600">
           Don't have an account?{' '}
           <Link
             to="/signup"
-            className="text-gray-900 dark:text-white underline hover:no-underline font-medium"
+            className="text-gray-900 underline hover:no-underline font-medium"
           >
             Sign up
           </Link>
