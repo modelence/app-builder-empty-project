@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { modelenceQuery, modelenceMutation, createQueryKey } from '@modelence/react-query';
+import { RefreshCw, Plus, Calendar } from 'lucide-react';
 
 type ExampleItem = {
   title: string;
@@ -33,11 +34,20 @@ export default function ExamplePage() {
       {data && (
         <>
           <h1>{data.title}</h1>
-          <p>Created: {new Date(data.createdAt).toLocaleString()}</p>
+          <p className="flex items-center gap-1.5">
+            <Calendar className="w-4 h-4" />
+            Created: {new Date(data.createdAt).toLocaleString()}
+          </p>
         </>
       )}
-      <button onClick={invalidateItem}>Invalidate Item</button>
-      <button onClick={() => createItem({ title: 'New Item' })} disabled={isCreatingItem}>Create Item</button>
+      <button onClick={invalidateItem} className="flex items-center gap-1.5">
+        <RefreshCw className="w-4 h-4" />
+        Invalidate Item
+      </button>
+      <button onClick={() => createItem({ title: 'New Item' })} disabled={isCreatingItem} className="flex items-center gap-1.5">
+        <Plus className="w-4 h-4" />
+        Create Item
+      </button>
     </div>
   );
 }
