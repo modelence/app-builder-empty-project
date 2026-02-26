@@ -6,7 +6,7 @@ startApp({
   modules: [exampleModule /* Add your modules here */],
 
   security: {
-    frameAncestors: ['https://modelence.com', 'https://*.modelence.com'],
+    frameAncestors: ['https://modelence.com', 'https://*.modelence.com', 'http://localhost:*'],
   },
 
   migrations: [{
