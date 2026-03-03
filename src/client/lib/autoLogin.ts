@@ -8,6 +8,11 @@ export function useAutoLogin() {
   const attemptedRef = useRef(false);
 
   useEffect(() => {
+    const envType = getConfig('_system.env.type') as string | undefined;
+    if (envType !== 'sandbox') {
+      return;
+    }
+
     if (user || attemptedRef.current) {
       return;
     }

@@ -18,6 +18,10 @@ export default function LoginPage() {
 }
 
 function LoginForm() {
+  const isSandboxEnv = getConfig('_system.env.type') === 'sandbox';
+  const defaultDemoEmail = isSandboxEnv ? getConfig('example.modelenceDemoUsername') as string | undefined : undefined;
+  const defaultDemoPassword = isSandboxEnv ? getConfig('example.modelenceDemoPassword') as string | undefined : undefined;
+
   const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -46,7 +50,7 @@ function LoginForm() {
               type="email" 
               name="email" 
               id="email"
-              defaultValue={getConfig('example.modelenceDemoUsername') as string | undefined}
+              defaultValue={defaultDemoEmail}
               required
             />
           </div>
@@ -67,7 +71,7 @@ function LoginForm() {
               type="password" 
               name="password" 
               id="password" 
-              defaultValue={getConfig('example.modelenceDemoPassword') as string | undefined}
+              defaultValue={defaultDemoPassword}
               required
             />
           </div>
