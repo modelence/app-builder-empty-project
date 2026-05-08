@@ -1,13 +1,11 @@
 ## Comprehensive Project Structure Overview
 
-I've explored the Modelence application codebase. Here's a detailed breakdown of what's available:
-
 ### 1. PROJECT STRUCTURE
 
 ```
 /user-app/
 ├── src/
-│   ├── client/                      # React frontend
+│   ├── client/                      # React frontend (React 19)
 │   │   ├── assets/                  # Images/logos (favicon.svg, modelence.svg)
 │   │   ├── components/
 │   │   │   ├── ui/                  # Reusable UI components (shadcn-style)
@@ -16,7 +14,8 @@ I've explored the Modelence application codebase. Here's a detailed breakdown of
 │   │   │   │   ├── Label.tsx
 │   │   │   │   └── Card.tsx
 │   │   │   ├── LoadingSpinner.tsx    # Custom loading component
-│   │   │   └── Page.tsx              # Page wrapper with header
+│   │   │   ├── Page.tsx              # Page wrapper with header (accepts `seo` prop)
+│   │   │   └── Seo.tsx               # Renders <title> via React 19 native metadata
 │   │   ├── pages/                    # Route pages
 │   │   │   ├── HomePage.tsx
 │   │   │   ├── LoginPage.tsx
@@ -27,18 +26,22 @@ I've explored the Modelence application codebase. Here's a detailed breakdown of
 │   │   │   ├── TermsPage.tsx
 │   │   │   └── NotFoundPage.tsx
 │   │   ├── lib/
-│   │   │   └── utils.ts              # Utility functions (cn helper)
+│   │   │   ├── utils.ts              # Utility functions (cn helper)
+│   │   │   └── autoLogin.ts          # Sandbox auto-login hook
 │   │   ├── router.tsx                # React Router configuration
+│   │   ├── seo.config.ts             # Single source of truth for site name / <title>
 │   │   ├── index.tsx                 # App entry point
 │   │   ├── types.d.ts
 │   │   └── index.css
 │   │
 │   └── server/                       # Node.js backend
 │       ├── app.ts                    # Server entry point
-│       └── example/
-│           ├── index.ts              # Module definition with queries/mutations
-│           ├── db.ts                 # Database schemas
-│           └── cron.ts               # Scheduled jobs
+│       ├── example/
+│       │   ├── index.ts              # Module definition with queries/mutations
+│       │   ├── db.ts                 # Database schemas
+│       │   └── cron.ts               # Scheduled jobs
+│       └── migrations/
+│           └── createDemoUser.ts     # Seeds the sandbox demo user
 │
 ├── Configuration Files
 │   ├── tsconfig.json                 # TypeScript config with @/* path alias
@@ -134,10 +137,11 @@ The app already has two working form examples you can reference:
   - Redirect with `_redirect` query param to return after login
 
 #### Page Wrapper (`/user-app/src/client/components/Page.tsx`)
-- Header with logo, user info, logout button
+- Header with a Home button (left) and either user handle + Logout or a Sign in button (right) — no logo
 - Responsive layout with max-width
 - Body section with optional loading state
-- Built-in navigation
+- Accepts a `seo` prop (`{ title?, noindex? }`) that is forwarded to `<Seo />`
+  to set the document `<title>` per page (see SEO/TITLE PATTERN below)
 
 ### 6. MODULE SYSTEM (Backend)
 
@@ -175,25 +179,7 @@ export const dbExampleItems = new Store('exampleItems', {
 });
 ```
 
-### 7. KEY DEPENDENCIES
-
-From `package.json`:
-```json
-{
-  "@modelence/react-query": "^1.0.2",      // Modelence + React Query integration
-  "@tanstack/react-query": "^5.90.12",     // Server state management
-  "react": "^18.2.0",
-  "react-dom": "^18.2.0",
-  "react-router-dom": "^6.22.0",           // Client routing
-  "react-hot-toast": "^2.4.1",             // Toast notifications
-  "zod": "^4.1.13",                        // Schema validation
-  "tailwindcss": "^3.4.1",                 // Styling
-  "clsx": "^2.1.1",                        // Class utilities
-  "tailwind-merge": "^3.4.0"               // Class merging
-}
-```
-
-### 8. BUILD & DEVELOPMENT
+### 7. BUILD & DEVELOPMENT
 
 **Scripts** (from package.json):
 ```bash
@@ -209,32 +195,53 @@ npm test             # Run tests (not configured)
 - Dev server: `0.0.0.0:5173` (allows external access)
 - React plugin enabled
 
-### 9. STYLING SETUP
+### 8. STYLING SETUP
 
 - **Tailwind CSS**: Configured with `src/client/**/*.{js,jsx,ts,tsx}` content paths
 - **PostCSS**: Enabled with autoprefixer
 - **Color Scheme**: Gray, black, white primary colors; blue, red accents
 
-### 10. AVAILABLE PATTERNS FOR TODO LIST FORM
+### 9. PAGE TITLES
 
-You can reuse:
+- Site name lives in `/user-app/src/client/seo.config.ts` — **set it here
+  once the real product name is known**.
+- Per-page title: pass `seo` to `<Page />`, e.g.
+  `<Page seo={{ title: 'Sign in' }}>`. Set `noindex: true` for auth/404 pages.
+- Rendered at runtime via React 19 native `<title>`; no SEO library needed.
 
-1. **Form Structure**: FormData API like in LoginPage/SignupPage
-2. **Validation**: Zod on backend, client-side checks in form
-3. **UI Components**: Button, Input, Label, Card for form container
-4. **Page Layout**: Use Page wrapper component
-5. **Toast Notifications**: `react-hot-toast` for feedback
-6. **State Management**: React Query for server state
-7. **Hooks**: `useCallback`, `useState`, `useMutation`, `useQuery`
-8. **Styling**: Use `cn()` utility to combine classes
+### 10. REUSABLE PATTERNS FOR NEW FEATURES
+
+When adding a new feature, reach for these existing building blocks before
+introducing new ones:
+
+1. **Forms**: native `FormData` API, mirroring `LoginPage` / `SignupPage`.
+2. **Validation**: Zod on the server (inside module queries/mutations);
+   lightweight client-side checks before submit.
+3. **UI Components**: `Button`, `Input`, `Label`, `Card` from
+   `src/client/components/ui/`. Avoid pulling in external UI libraries.
+4. **Page Layout**: wrap routes in `<Page>` (sets header + `<title>` via
+   the `seo` prop).
+5. **Icons**: `lucide-react`.
+6. **Toast Notifications**: `react-hot-toast` for user feedback.
+7. **Server State**: `@tanstack/react-query` via `@modelence/react-query`
+   helpers (`useQuery`, `useMutation`).
+8. **Local State**: standard React hooks (`useState`, `useCallback`,
+   `useMemo`, `useRef`). On React 19, prefer ref-as-prop over `forwardRef`
+   in any new components.
+9. **Styling**: Tailwind classes combined with the `cn()` helper from
+   `src/client/lib/utils.ts`.
+10. **Backend feature**: add a new `Module` under `src/server/<feature>/`
+    following the `example` module shape (`configSchema`, `stores`,
+    `queries`, `mutations`, optional `cronJobs`), and register it in
+    `src/server/app.ts`.
 
 ### Summary
 
 This is a full-stack Modelence framework application with:
-- Clean component structure ready for a todo list feature
+- Clean component structure ready for new features
 - All necessary UI building blocks already available
 - Form handling patterns established
 - Database and backend module patterns ready to follow
 - Authentication system in place
 - TypeScript support throughout
-- No external shadcn/ui dependency needed - custom components are already implemented
+- No external shadcn/ui dependency needed — custom components are already implemented
