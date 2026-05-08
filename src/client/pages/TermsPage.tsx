@@ -3,7 +3,7 @@ import Page from '@/client/components/Page';
 
 export default function TermsPage() {
   return (
-    <Page>
+    <Page seo={{ title: 'Terms' }}>
       <div className="max-w-3xl mx-auto py-8">
         <Card className="bg-white text-gray-900">
           <CardHeader>

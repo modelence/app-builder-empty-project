@@ -5,7 +5,7 @@ import Page from '@/client/components/Page';
 
 export default function NotFoundPage() {
   return (
-    <Page>
+    <Page seo={{ title: 'Page not found', noindex: true }}>
       <div className="flex items-center justify-center min-h-full">
         <Card className="w-full max-w-sm mx-auto bg-white text-gray-900">
           <CardHeader className="text-center">

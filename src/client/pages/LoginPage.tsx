@@ -9,7 +9,7 @@ import Page from '@/client/components/Page';
 
 export default function LoginPage() {
   return (
-    <Page>
+    <Page seo={{ title: 'Sign in', noindex: true }}>
       <div className="flex items-center justify-center min-h-full">
         <LoginForm />
       </div>

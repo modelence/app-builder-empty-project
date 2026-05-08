@@ -6,6 +6,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSession } from 'modelence/client';
 import LoadingSpinner from '@/client/components/LoadingSpinner';
+import { Seo, type SeoProps } from '@/client/components/Seo';
 import { Button } from '@/client/components/ui/Button';
 import { cn } from '@/client/lib/utils';
 
@@ -13,6 +14,8 @@ interface PageProps {
   children?: React.ReactNode;
   isLoading?: boolean;
   className?: string;
+  /** Per-page <head> overrides (title, description, OG image, etc). */
+  seo?: SeoProps;
 }
 
 function Header() {
@@ -68,9 +71,10 @@ function PageBody({ children, className, isLoading = false }: PageProps) {
   );
 }
 
-export default function Page({ children, className, isLoading = false }: PageProps) {
+export default function Page({ children, className, isLoading = false, seo }: PageProps) {
   return (
     <PageWrapper>
+      <Seo {...seo} />
       <Header />
       <PageBody className={className} isLoading={isLoading}>{children}</PageBody>
     </PageWrapper>

@@ -10,7 +10,7 @@ import { toast } from 'react-hot-toast';
 
 export default function SignupPage() {
   return (
-    <Page>
+    <Page seo={{ title: 'Sign up', noindex: true }}>
       <div className="flex items-center justify-center min-h-full">
         <SignupForm />
       </div>
