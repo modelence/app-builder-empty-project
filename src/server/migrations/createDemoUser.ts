@@ -10,7 +10,7 @@ export async function createDemoUser() {
     status: 'active',
     emails: [{
       address: email,
-      verified: false,
+      verified: true,
     }],
     createdAt: new Date(),
     authMethods: {
