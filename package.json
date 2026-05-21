@@ -23,13 +23,12 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.1.14",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^20.11.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "autoprefixer": "^10.4.17",
-    "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.19",
+    "tailwindcss": "^4.1.14",
     "typescript": "^5.3.3"
   },
   "overrides": {
