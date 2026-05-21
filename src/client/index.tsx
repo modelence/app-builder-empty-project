@@ -8,6 +8,7 @@ import { router } from './router';
 import favicon from './assets/favicon.svg';
 import './index.css';
 import LoadingSpinner from './components/LoadingSpinner';
+import { Seo } from './components/Seo';
 import { useAutoLogin } from './lib/autoLogin';
 
 const queryClient = new QueryClient();
@@ -17,6 +18,8 @@ function App() {
 
   return (
     <Suspense fallback={<LoadingSpinner fullScreen />}>
+      {/* Site-wide SEO defaults; pages can override via <Page seo={{...}}> */}
+      <Seo />
       <Toaster position="top-right" />
       <RouterProvider router={router} />
     </Suspense>

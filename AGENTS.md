@@ -201,13 +201,27 @@ npm test             # Run tests (not configured)
 - **PostCSS**: Enabled with autoprefixer
 - **Color Scheme**: Gray, black, white primary colors; blue, red accents
 
-### 9. PAGE TITLES
+### 9. SEO (TITLE, DESCRIPTION, OG TAGS)
 
-- Site name lives in `/user-app/src/client/seo.config.ts` — **set it here
-  once the real product name is known**.
-- Per-page title: pass `seo` to `<Page />`, e.g.
-  `<Page seo={{ title: 'Sign in' }}>`. Set `noindex: true` for auth/404 pages.
-- Rendered at runtime via React 19 native `<title>`; no SEO library needed.
+- `src/client/seo.config.ts` is the single source of truth for `siteName` and
+  the site-wide meta `description`. **You MUST update both fields** as soon as
+  the product name is known — they default to the literal string
+  `"Empty Project"` and a generic placeholder description, both of which ship
+  broken SEO and social previews. Update them on any landing-page task or
+  product-rename request.
+- `<Seo />` (in `src/client/components/Seo.tsx`) renders `<title>`, the meta
+  description, and Open Graph / Twitter card tags from `seoConfig`. It is
+  already mounted once at the app root in `src/client/index.tsx`, so every
+  page inherits the site-wide defaults automatically.
+- Per-page overrides: pass `seo` to `<Page />`, e.g.
+  `<Page seo={{ title: 'Sign in' }}>` or
+  `<Page seo={{ title: 'Pricing', description: '...' }}>`. Set
+  `noindex: true` for auth, terms, and 404 pages.
+- Rendered at runtime via React 19 native `<title>` / `<meta>` hoisting; no
+  SEO library needed.
+- Heading hierarchy: every page must have exactly one `<h1>` and headings
+  must descend monotonically (`h1 → h2 → h3`, never skip a level). Skipped
+  levels hurt accessibility audits and SEO.
 
 ### 10. REUSABLE PATTERNS FOR NEW FEATURES
 
