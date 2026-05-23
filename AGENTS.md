@@ -259,3 +259,41 @@ This is a full-stack Modelence framework application with:
 - Authentication system in place
 - TypeScript support throughout
 - No external shadcn/ui dependency needed — custom components are already implemented
+
+### 11. MOBILE APP (Expo, optional)
+
+A project may *optionally* include a mobile app alongside the web app. The
+sandbox tooling detects mobile support by the presence of a `mobile/` folder
+at the project root that contains its own `package.json`.
+
+**Folder layout**
+
+```
+project-root/
+├── src/server/        # Modelence backend (unchanged)
+├── src/client/        # Web client (unchanged)
+├── package.json       # Web dependencies
+└── mobile/            # Optional — Expo / React Native app
+    ├── package.json   # Expo's deps (kept separate from web)
+    ├── app.json       # Expo config
+    ├── App.tsx
+    ├── babel.config.js
+    └── tsconfig.json
+```
+
+**Important rules**
+
+- Keep `mobile/`'s `package.json` and `node_modules` separate from the web
+  app's. Metro and Vite cannot share the same dependency tree.
+- The Studio sandbox runs `expo start --tunnel` automatically when the user
+  opens the Mobile preview tab. **Do not** add a long-running Expo process
+  to the root `package.json`'s `dev` script.
+- Optional convenience scripts you may add at the project root:
+  `"dev:mobile": "cd mobile && npm run start"`,
+  `"install:mobile": "cd mobile && npm install"`.
+- API calls from the mobile app to the Modelence backend should target the
+  sandbox URL exposed in the studio preview (set via an env var the user
+  configures in `mobile/app.json`'s `extra` field).
+- When adding shared logic, prefer plain TypeScript modules under
+  `src/shared/` and import them from both the web client and `mobile/App.tsx`.
+  Avoid React-DOM-only or Node-only imports in shared code.
