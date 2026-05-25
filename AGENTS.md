@@ -295,9 +295,10 @@ project-root/
 - The Studio sandbox runs `expo start --tunnel` automatically when the user
   opens the Mobile preview tab. **Do not** add a long-running Expo process
   to the root `package.json`'s `dev` script.
-- The root `package.json` has a `postinstall` that re-installs mobile deps
-  whenever the marker exists. Do not remove it; do not change it to run
-  unconditionally.
+- The root `package.json` has a `postinstall` that runs
+  `node scripts/postinstall.mjs`. That script re-installs mobile deps whenever
+  the marker exists and no-ops otherwise. Do not remove either; do not change
+  the script to run unconditionally.
 - Optional convenience scripts you may add at the project root:
   `"dev:mobile": "cd mobile && npm run start"`.
 - API calls from the mobile app to the Modelence backend should target the
