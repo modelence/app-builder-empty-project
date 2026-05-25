@@ -263,8 +263,10 @@ This is a full-stack Modelence framework application with:
 ### 11. MOBILE APP (Expo, optional)
 
 A project may *optionally* include a mobile app alongside the web app. The
-sandbox tooling detects mobile support by the presence of a `mobile/` folder
-at the project root that contains its own `package.json`.
+template ships an empty `mobile/` folder, but the studio treats the mobile
+app as "not yet created" until the marker file
+`mobile/.modelence-mobile-enabled` exists. The Mobile tab in the studio shows
+a "Create mobile app" CTA in this state.
 
 **Folder layout**
 
@@ -272,8 +274,9 @@ at the project root that contains its own `package.json`.
 project-root/
 ├── src/server/        # Modelence backend (unchanged)
 ├── src/client/        # Web client (unchanged)
-├── package.json       # Web dependencies
-└── mobile/            # Optional — Expo / React Native app
+├── package.json       # Web dependencies (+ postinstall for mobile)
+└── mobile/            # Expo / React Native app (shipped but unhooked)
+    ├── .modelence-mobile-enabled  # marker file — present once created
     ├── package.json   # Expo's deps (kept separate from web)
     ├── app.json       # Expo config
     ├── App.tsx
@@ -283,14 +286,20 @@ project-root/
 
 **Important rules**
 
+- The studio's "Create mobile app" flow (button or matching free-text prompt)
+  scaffolds/installs the Expo app and writes `mobile/.modelence-mobile-enabled`.
+  Do NOT write that marker without first installing Expo dependencies — the
+  studio assumes mobile is fully usable once the marker is present.
 - Keep `mobile/`'s `package.json` and `node_modules` separate from the web
   app's. Metro and Vite cannot share the same dependency tree.
 - The Studio sandbox runs `expo start --tunnel` automatically when the user
   opens the Mobile preview tab. **Do not** add a long-running Expo process
   to the root `package.json`'s `dev` script.
+- The root `package.json` has a `postinstall` that re-installs mobile deps
+  whenever the marker exists. Do not remove it; do not change it to run
+  unconditionally.
 - Optional convenience scripts you may add at the project root:
-  `"dev:mobile": "cd mobile && npm run start"`,
-  `"install:mobile": "cd mobile && npm install"`.
+  `"dev:mobile": "cd mobile && npm run start"`.
 - API calls from the mobile app to the Modelence backend should target the
   sandbox URL exposed in the studio preview (set via an env var the user
   configures in `mobile/app.json`'s `extra` field).

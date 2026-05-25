@@ -8,7 +8,7 @@
     "start": "node .modelence/build/app.mjs",
     "dev": "modelence dev",
     "dev:mobile": "cd mobile && npm run start",
-    "postinstall": "cd mobile && (test -d node_modules/expo || npm install --no-audit --no-fund)",
+    "postinstall": "node scripts/postinstall.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
