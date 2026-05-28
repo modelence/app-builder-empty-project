@@ -10,8 +10,12 @@
     "ios": "expo start --ios"
   },
   "dependencies": {
-    "expo": "~56.0.2",
+    "@modelence/react-query": "^1.2.5",
+    "@react-native-async-storage/async-storage": "^3.1.0",
+    "@tanstack/react-query": "^5.90.21",
+    "expo": "^46.0.21",
     "expo-status-bar": "~56.0.4",
+    "modelence": "^0.18.0-dev.rn.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.85.3",

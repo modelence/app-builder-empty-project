@@ -16,6 +16,9 @@
     },
     "web": {
       "bundler": "metro"
+    },
+    "extra": {
+      "modelenceBaseUrl": "https://cloud.modelence.com/"
     }
   }
 }
