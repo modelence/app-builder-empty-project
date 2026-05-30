@@ -1,22 +1,29 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function App() {
+  // SafeAreaProvider reads the device's real safe-area insets (notch, Dynamic
+  // Island, home indicator) from the OS on iOS/Android, and from the browser on
+  // web. SafeAreaView then pads content away from those areas automatically, so
+  // nothing is hidden under the front-camera cutout on any device.
   return (
-    <SafeAreaView style={styles.safe}>
-      <StatusBar style="dark" />
-      <View style={styles.container}>
-        <Text style={styles.title}>Hello, World!</Text>
-        <Text style={styles.subtitle}>Welcome to your new Modelence mobile app</Text>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.safe}>
+        <StatusBar style="dark" />
+        <View style={styles.container}>
+          <Text style={styles.title}>Hello, World!</Text>
+          <Text style={styles.subtitle}>Welcome to your new Modelence mobile app</Text>
 
-        <View style={styles.card}>
-          <Text style={styles.cardText}>
-            This is your mobile placeholder -{' '}
-            <Text style={styles.code}>mobile/App.tsx</Text>
-          </Text>
+          <View style={styles.card}>
+            <Text style={styles.cardText}>
+              This is your mobile placeholder -{' '}
+              <Text style={styles.code}>mobile/App.tsx</Text>
+            </Text>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
