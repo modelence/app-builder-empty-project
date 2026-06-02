@@ -26,11 +26,11 @@ if (!existsSync(MARKER)) {
 // Fall back to `npm install` only when there is no lockfile to install from.
 const hasLockfile = existsSync('mobile/package-lock.json');
 const command = hasLockfile
-  ? 'npm ci --prefix mobile --no-audit --no-fund'
-  : 'npm install --prefix mobile --no-audit --no-fund';
+  ? 'npm ci --no-audit --no-fund'
+  : 'npm install --no-audit --no-fund';
 
 console.log(`[postinstall] mobile marker present — installing mobile dependencies (${command})`);
-execSync(command, { stdio: 'inherit' });
+execSync(command, { stdio: 'inherit', cwd: 'mobile' });
 
 // `npm ci` (and any reinstall) deletes and recreates `mobile/node_modules`,
 // which invalidates Metro's cached module map. A dev server started against the
