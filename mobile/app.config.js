@@ -5,6 +5,7 @@ module.exports = {
   expo: {
     name: 'Modelence Mobile',
     slug: 'modelence-mobile',
+    scheme: 'modelence-mobile',
     version: '0.1.0',
     orientation: 'portrait',
     userInterfaceStyle: 'light',

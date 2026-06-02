@@ -1,10 +1,7 @@
-import { registerRootComponent } from 'expo';
 import Constants from 'expo-constants';
 import { Dimensions, PixelRatio } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { configureClient } from 'modelence/client';
-
-import App from './App';
 
 const AUTH_TOKEN_KEY = 'modelence.authToken';
 
@@ -23,11 +20,6 @@ const baseUrl: string = configuredBaseUrl;
 // and is rehydrated from storage after registration (see below).
 let authToken: string | undefined;
 
-// Configure the client and register the root component synchronously at module
-// top level. Expo's entry resolution expects registerRootComponent to run as a
-// side effect of importing the entry file; deferring it inside an async
-// function (awaiting AsyncStorage) means a slow or rejected read can leave the
-// root unregistered, surfacing as "App entry not found" in Expo Go.
 configureClient({
   baseUrl,
   getAuthToken: () => authToken,
@@ -52,8 +44,6 @@ configureClient({
     orientation: null,
   }),
 });
-
-registerRootComponent(App);
 
 // Rehydrate the persisted auth token in the background. Until this resolves,
 // getAuthToken() returns undefined — i.e. "not logged in yet", which is the
