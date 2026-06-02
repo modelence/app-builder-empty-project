@@ -26,8 +26,8 @@ if (!existsSync(MARKER)) {
 // Fall back to `npm install` only when there is no lockfile to install from.
 const hasLockfile = existsSync('mobile/package-lock.json');
 const command = hasLockfile
-  ? 'npm ci --no-audit --no-fund'
-  : 'npm install --no-audit --no-fund';
+  ? 'npm ci --no-audit --no-fund --legacy-peer-deps'
+  : 'npm install --no-audit --no-fund --legacy-peer-deps';
 
 console.log(`[postinstall] mobile marker present — installing mobile dependencies (${command})`);
 execSync(command, { stdio: 'inherit', cwd: 'mobile' });
