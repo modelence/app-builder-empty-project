@@ -259,3 +259,69 @@ This is a full-stack Modelence framework application with:
 - Authentication system in place
 - TypeScript support throughout
 - No external shadcn/ui dependency needed — custom components are already implemented
+
+### 11. MOBILE APP (Expo, optional)
+
+A project may *optionally* include a mobile app alongside the web app. The
+template ships an empty `mobile/` folder, but the studio treats the mobile
+app as "not yet created" until the marker file
+`mobile/.modelence-mobile-enabled` exists. The Mobile tab in the studio shows
+a "Create mobile app" CTA in this state.
+
+**Folder layout**
+
+```
+project-root/
+├── src/server/        # Modelence backend (unchanged)
+├── src/client/        # Web client (unchanged)
+├── package.json       # Web dependencies (+ postinstall for mobile)
+└── mobile/            # Expo / React Native app (shipped but unhooked)
+    ├── .modelence-mobile-enabled  # marker file — present once created
+    ├── package.json   # Expo's deps (main: "expo-router/entry")
+    ├── app.config.js  # Expo config (includes scheme for deep linking)
+    ├── index.ts       # configureClient + auth token persistence (side-effect module)
+    ├── app/           # Expo Router file-based routes
+    │   ├── _layout.tsx          # root layout — SafeAreaProvider, AppProvider, QueryClientProvider, RouteGuard
+    │   ├── (auth)/
+    │   │   ├── _layout.tsx      # headerless Stack for unauthenticated screens
+    │   │   └── sign-in.tsx      # sign-in screen
+    │   └── (app)/
+    │       ├── _layout.tsx      # headerless Stack for authenticated screens
+    │       └── home.tsx         # home screen (requires auth)
+    ├── babel.config.js
+    └── tsconfig.json
+```
+
+**Important rules**
+
+- The studio's "Create mobile app" flow (button or matching free-text prompt)
+  scaffolds/installs the Expo app and writes `mobile/.modelence-mobile-enabled`.
+  Do NOT write that marker without first installing Expo dependencies — the
+  studio assumes mobile is fully usable once the marker is present.
+- The mobile app uses **Expo Router 4.x** (file-based routing). The entry
+  point is `expo-router/entry` (set in `mobile/package.json`'s `"main"` field).
+  Route groups: `(auth)` for unauthenticated screens, `(app)` for protected
+  screens. The `RouteGuard` component in `app/_layout.tsx` redirects based on
+  `useSession()` — unauthenticated → `/(auth)/sign-in`, authenticated →
+  `/(app)/home`. Do not revert to a manual `registerRootComponent` + `App.tsx`
+  setup.
+- `index.ts` is a side-effect module (imported by `app/_layout.tsx`) that runs
+  `configureClient` and rehydrates the auth token from AsyncStorage. It does
+  NOT call `registerRootComponent`.
+- Keep `mobile/`'s `package.json` and `node_modules` separate from the web
+  app's. Metro and Vite cannot share the same dependency tree.
+- The Studio sandbox runs `expo start --tunnel` automatically when the user
+  opens the Mobile preview tab. **Do not** add a long-running Expo process
+  to the root `package.json`'s `dev` script.
+- The root `package.json` has a `postinstall` that runs
+  `node scripts/postinstall.mjs`. That script re-installs mobile deps whenever
+  the marker exists and no-ops otherwise. Do not remove either; do not change
+  the script to run unconditionally.
+- Optional convenience scripts you may add at the project root:
+  `"dev:mobile": "cd mobile && npm run start"`.
+- API calls from the mobile app to the Modelence backend should target the
+  sandbox URL exposed in the studio preview (set via an env var the user
+  configures in `mobile/app.json`'s `extra` field).
+- When adding shared logic, prefer plain TypeScript modules under
+  `src/shared/` and import them from both the web client and `mobile/App.tsx`.
+  Avoid React-DOM-only or Node-only imports in shared code.
