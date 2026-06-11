@@ -44,10 +44,8 @@
 │           └── createDemoUser.ts     # Seeds the sandbox demo user
 │
 ├── Configuration Files
-│   ├── tsconfig.json                 # TypeScript config with @/* path alias
-│   ├── tailwind.config.js            # Tailwind CSS setup
-│   ├── vite.config.ts                # Vite bundler config
-│   ├── postcss.config.js
+│   ├── tsconfig.json                 # TypeScript 
+│   ├── vite.config.ts                # Vite bundler config (loads @tailwindcss/vite)
 │   └── modelence.config.ts           # Modelence framework config
 │
 └── package.json                      # Dependencies & scripts
@@ -197,9 +195,10 @@ npm test             # Run tests (not configured)
 
 ### 8. STYLING SETUP
 
-- **Tailwind CSS**: Configured with `src/client/**/*.{js,jsx,ts,tsx}` content paths
-- **PostCSS**: Enabled with autoprefixer
-- **Color Scheme**: Gray, black, white primary colors; blue, red accents
+- **Tailwind CSS v4** via the `@tailwindcss/vite` plugin. All Tailwind config
+  is CSS-first in `src/client/index.css` (`@import "tailwindcss"`, `@theme`,
+  `@source`, etc.) — customize the design system there.
+- **Color Scheme**: Gray, black, white primary colors; blue, red accents.
 
 ### 9. SEO (TITLE, DESCRIPTION, OG TAGS)
 
