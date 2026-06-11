@@ -44,8 +44,7 @@
 │           └── createDemoUser.ts     # Seeds the sandbox demo user
 │
 ├── Configuration Files
-│   ├── tsconfig.json                 # TypeScript config with @/* path alias
-│   ├── tailwind.config.js            # Tailwind CSS setup
+│   ├── tsconfig.json                 # TypeScript 
 │   ├── vite.config.ts                # Vite bundler config
 │   ├── postcss.config.js
 │   └── modelence.config.ts           # Modelence framework config
