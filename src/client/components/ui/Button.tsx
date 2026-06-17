@@ -13,6 +13,7 @@ import {
   type Color,
 } from "./_shared/variants";
 import { SIZES, ICON_GLYPH, DEFAULT_SIZE, type ControlSize } from "./_shared/sizes";
+import { useButtonGroup } from "./_shared/buttonGroup";
 import { Spinner } from "./Spinner";
 
 export interface ButtonProps
@@ -37,9 +38,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
-      variant = DEFAULT_VARIANT,
-      color = DEFAULT_COLOR,
-      size = DEFAULT_SIZE,
+      variant: variantProp,
+      color: colorProp,
+      size: sizeProp,
       loading = false,
       leftIcon,
       rightIcon,
@@ -50,6 +51,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
+    // Resolution order: explicit prop -> ButtonGroup context -> module default.
+    const group = useButtonGroup();
+    const variant = variantProp ?? group?.variant ?? DEFAULT_VARIANT;
+    const color = colorProp ?? group?.color ?? DEFAULT_COLOR;
+    const size = sizeProp ?? group?.size ?? DEFAULT_SIZE;
+
     const classes = cn(
       CONTROL_BASE,
       SIZES[size],
