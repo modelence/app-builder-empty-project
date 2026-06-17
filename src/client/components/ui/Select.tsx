@@ -90,7 +90,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                     label={option.label}
                     disabled={option.disabled}
                     className={cn(
-                      "relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-7 pr-2 text-sm outline-none",
+                      "relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-7 pr-2 text-sm outline-none",
                       "data-[highlighted]:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                     )}
                   >
