@@ -108,17 +108,18 @@ Edit these to retune the whole library; every control reads from them.
 - **`Checkbox.tsx`** — Base UI; Space toggles; supports `indeterminate`.
 - **`Switch.tsx`** — Base UI toggle.
 - **`RadioGroup.tsx`** — `RadioGroup` + `RadioGroupItem`; arrow-key roving focus.
-- **`Select.tsx`** — compound: `Select`, `SelectTrigger` (takes `size`),
-  `SelectValue`, `SelectContent`, `SelectItem`, `SelectGroup`, `SelectLabel`,
-  `SelectSeparator`.
+- **`Select.tsx`** — single component: `<Select options={[{label,value,disabled}]}
+  value onValueChange placeholder size />`. Shows the selected option's label in
+  the closed trigger (via Base UI `items`). Optional `renderItem` for custom rows.
 
 #### Overlays & navigation
 - **`Dialog.tsx`** — `Dialog`, `DialogTrigger`, `DialogContent` (Esc-closes,
   focus-trapped, built-in close button), `DialogTitle`, `DialogDescription`,
   `DialogHeader`, `DialogFooter`, `DialogClose`.
 - **`DropdownMenu.tsx`** — `DropdownMenu`, `DropdownMenuTrigger`,
-  `DropdownMenuContent`, `DropdownMenuItem`, `DropdownMenuLabel`,
-  `DropdownMenuSeparator`, `DropdownMenuGroup`.
+  `DropdownMenuContent`, `DropdownMenuItem`, `DropdownMenuLabel` (standalone,
+  use anywhere), `DropdownMenuSeparator`, `DropdownMenuGroup` +
+  `DropdownMenuGroupLabel` (the label MUST be inside a Group).
 - **`Tabs.tsx`** — `Tabs`, `TabsList`, `TabsTab`, `TabsPanel`.
 - **`Tooltip.tsx`** — `Tooltip`, `TooltipTrigger`, `TooltipContent`. Requires
   **`TooltipProvider`**, already mounted once at the app root in `index.tsx`.

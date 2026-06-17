@@ -22,7 +22,7 @@ const Switch = React.forwardRef<
     )}
     {...props}
   >
-    <BaseSwitch.Thumb className="block h-4 w-4 translate-x-0.5 rounded-full bg-white shadow transition-transform data-[checked]:translate-x-4" />
+    <BaseSwitch.Thumb className="block h-4 w-4 translate-x-0.5 rounded-full bg-white shadow transition-transform data-[checked]:translate-x-[18px]" />
   </BaseSwitch.Root>
 ));
 Switch.displayName = "Switch";

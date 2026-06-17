@@ -56,7 +56,25 @@ const DropdownMenuSeparator = React.forwardRef<
 ));
 DropdownMenuSeparator.displayName = "DropdownMenuSeparator";
 
+/**
+ * Standalone menu label — usable anywhere inside the content (does not require a
+ * Group). For an accessible label tied to a group, wrap items in
+ * `DropdownMenuGroup` and pass `inset`/styling as needed via `DropdownMenuGroupLabel`.
+ */
 const DropdownMenuLabel = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("px-2 py-1.5 text-xs font-medium text-gray-500", className)}
+    {...props}
+  />
+));
+DropdownMenuLabel.displayName = "DropdownMenuLabel";
+
+/** Accessible group label — MUST be used inside `DropdownMenuGroup`. */
+const DropdownMenuGroupLabel = React.forwardRef<
   React.ElementRef<typeof Menu.GroupLabel>,
   React.ComponentPropsWithoutRef<typeof Menu.GroupLabel>
 >(({ className, ...props }, ref) => (
@@ -66,7 +84,7 @@ const DropdownMenuLabel = React.forwardRef<
     {...props}
   />
 ));
-DropdownMenuLabel.displayName = "DropdownMenuLabel";
+DropdownMenuGroupLabel.displayName = "DropdownMenuGroupLabel";
 
 export {
   DropdownMenu,
@@ -76,4 +94,5 @@ export {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
+  DropdownMenuGroupLabel,
 };
