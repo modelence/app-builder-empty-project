@@ -18,7 +18,7 @@ function App() {
   useAutoLogin();
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delay={150}>
       <Suspense fallback={<LoadingSpinner fullScreen />}>
         {/* Site-wide SEO defaults; pages can override via <Page seo={{...}}> */}
         <Seo />
