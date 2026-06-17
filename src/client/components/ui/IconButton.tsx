@@ -7,42 +7,37 @@ import { cn } from "@/client/lib/utils";
 import {
   CONTROL_BASE,
   variantColorClasses,
-  DEFAULT_VARIANT,
   DEFAULT_COLOR,
   type Variant,
   type Color,
 } from "./_shared/variants";
-import { SIZES, ICON_GLYPH, DEFAULT_SIZE, type ControlSize } from "./_shared/sizes";
+import { ICON_SIZES, ICON_GLYPH, DEFAULT_SIZE, type ControlSize } from "./_shared/sizes";
 import { Spinner } from "./Spinner";
 
-export interface ButtonProps
+export interface IconButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "color"> {
-  /** Style treatment. @default "solid" */
+  /** Style treatment. @default "ghost" */
   variant?: Variant;
   /** Intent color. @default "neutral" */
   color?: Color;
-  /** @default "md" */
+  /** @default "md" — shares the same heights as Button (sm/md/lg). */
   size?: ControlSize;
+  /** Required for accessibility — icon-only buttons have no text label. */
+  "aria-label": string;
   /** Shows a spinner and disables the button. */
   loading?: boolean;
-  /** Icon rendered before the label (hidden while loading). */
-  leftIcon?: React.ReactNode;
-  /** Icon rendered after the label. */
-  rightIcon?: React.ReactNode;
-  /** Render as a different element (e.g. an anchor). Replaces the old `asChild`. */
+  /** Render as a different element. Replaces the old `asChild`. */
   render?: useRender.RenderProp;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
   (
     {
       className,
-      variant = DEFAULT_VARIANT,
+      variant = "ghost",
       color = DEFAULT_COLOR,
       size = DEFAULT_SIZE,
       loading = false,
-      leftIcon,
-      rightIcon,
       render,
       disabled,
       children,
@@ -52,22 +47,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const classes = cn(
       CONTROL_BASE,
-      SIZES[size],
+      ICON_SIZES[size],
       variantColorClasses(variant, color),
       className
     );
 
-    const content = (
-      <>
-        {loading ? (
-          <Spinner className={ICON_GLYPH[size]} />
-        ) : (
-          leftIcon
-        )}
-        {children}
-        {rightIcon}
-      </>
-    );
+    const content = loading ? <Spinner className={ICON_GLYPH[size]} /> : children;
 
     return useRender({
       ref,
@@ -86,6 +71,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     });
   }
 );
-Button.displayName = "Button";
+IconButton.displayName = "IconButton";
 
-export { Button };
+export { IconButton };
