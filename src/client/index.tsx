@@ -10,6 +10,7 @@ import './index.css';
 import LoadingSpinner from './components/LoadingSpinner';
 import { Seo } from './components/Seo';
 import { useAutoLogin } from './lib/autoLogin';
+import { TooltipProvider } from './components/ui/Tooltip';
 
 const queryClient = new QueryClient();
 
@@ -17,12 +18,14 @@ function App() {
   useAutoLogin();
 
   return (
-    <Suspense fallback={<LoadingSpinner fullScreen />}>
-      {/* Site-wide SEO defaults; pages can override via <Page seo={{...}}> */}
-      <Seo />
-      <Toaster position="top-right" />
-      <RouterProvider router={router} />
-    </Suspense>
+    <TooltipProvider delay={150}>
+      <Suspense fallback={<LoadingSpinner fullScreen />}>
+        {/* Site-wide SEO defaults; pages can override via <Page seo={{...}}> */}
+        <Seo />
+        <Toaster position="top-right" />
+        <RouterProvider router={router} />
+      </Suspense>
+    </TooltipProvider>
   );
 }
 

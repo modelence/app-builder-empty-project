@@ -8,12 +8,28 @@
 │   ├── client/                      # React frontend (React 19)
 │   │   ├── assets/                  # Images/logos (favicon.svg, modelence.svg)
 │   │   ├── components/
-│   │   │   ├── ui/                  # Reusable UI components (shadcn-style)
-│   │   │   │   ├── Button.tsx
+│   │   │   ├── ui/                  # Reusable UI components (shadcn-style, on Base UI)
+│   │   │   │   ├── _shared/         # sizes.ts, variants.ts, buttonGroup.ts (design tokens)
+│   │   │   │   ├── Button.tsx        # variant × color × size, render, loading
+│   │   │   │   ├── IconButton.tsx    # square icon-only button (same sizes as Button)
+│   │   │   │   ├── ButtonGroup.tsx   # segmented Button/IconButton group
 │   │   │   │   ├── Input.tsx
+│   │   │   │   ├── Textarea.tsx
 │   │   │   │   ├── Label.tsx
-│   │   │   │   └── Card.tsx
-│   │   │   ├── LoadingSpinner.tsx    # Custom loading component
+│   │   │   │   ├── Badge.tsx
+│   │   │   │   ├── Card.tsx
+│   │   │   │   ├── Spinner.tsx       # inline spinner glyph (for controls)
+│   │   │   │   ├── Checkbox.tsx
+│   │   │   │   ├── Switch.tsx
+│   │   │   │   ├── RadioGroup.tsx
+│   │   │   │   ├── Select.tsx
+│   │   │   │   ├── Dialog.tsx
+│   │   │   │   ├── DropdownMenu.tsx
+│   │   │   │   ├── Tabs.tsx
+│   │   │   │   ├── Tooltip.tsx
+│   │   │   │   ├── Avatar.tsx
+│   │   │   │   └── Separator.tsx
+│   │   │   ├── LoadingSpinner.tsx    # Page-level loading component (uses ui/Spinner)
 │   │   │   ├── Page.tsx              # Page wrapper with header (accepts `seo` prop)
 │   │   │   └── Seo.tsx               # Renders <title> via React 19 native metadata
 │   │   ├── pages/                    # Route pages
@@ -51,35 +67,75 @@
 └── package.json                      # Dependencies & scripts
 ```
 
-### 2. AVAILABLE UI COMPONENTS (SHADCN-STYLE)
+### 2. AVAILABLE UI COMPONENTS (SHADCN-STYLE, ON BASE UI)
 
-All components are custom implementations located in `/user-app/src/client/components/ui/`:
+Located in `/user-app/src/client/components/ui/`. Interactive primitives wrap
+**Base UI** (`@base-ui/react`, unstyled, accessible — keyboard nav, focus
+management, Esc/Space/arrow handling come for free). Style is applied via
+Tailwind + `data-*` state attributes. Plain controls (Button, Input, etc.) are
+styled native elements. **No barrel index** — import each from its own file.
 
-#### Button Component (`/user-app/src/client/components/ui/Button.tsx`)
-- **Variants**: default, destructive, outline, secondary, ghost, link
-- **Sizes**: default, sm, lg, icon
-- **Features**: Forward ref, fully styled with Tailwind, hover/active states
-- **Props**: `ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>`
+#### Design tokens — single source of truth (`ui/_shared/`)
+Edit these to retune the whole library; every control reads from them.
+- **`sizes.ts`** — control sizes `sm | md | lg`. `SIZES` (text controls),
+  `ICON_SIZES` (square icon controls), `ICON_GLYPH` (inline icon px). Heights
+  are shared (`sm=h-8 / md=h-9 / lg=h-10`) so an `sm` Button lines up with an
+  `sm` Input/Select/IconButton. **Keep `h-*` in sync between the two maps.**
+- **`variants.ts`** — `variant` (style: `solid | outline | ghost | link | soft`)
+  × `color` (intent: `neutral | primary | destructive`). `solid`+`neutral` is
+  the default black button. `CONTROL_BASE` holds shared base + focus ring +
+  `cursor-pointer`.
+- **`buttonGroup.ts`** — context for ButtonGroup → child size/variant/color.
 
-#### Input Component (`/user-app/src/client/components/ui/Input.tsx`)
-- **Features**: Forward ref, styled with Tailwind
-- **Supports**: All standard HTML input attributes
-- **Styling**: Border, focus ring, dark mode, placeholder colors
+#### Buttons
+- **`Button.tsx`** — `variant`, `color`, `size`, `loading`, `leftIcon`,
+  `rightIcon`, `render` (polymorphism via Base UI `useRender` — replaces the old
+  `asChild`). No `size="icon"` (use IconButton). Migration from old API:
+  `default`→solid/neutral · `destructive`→solid+destructive ·
+  `secondary`→soft+neutral · `outline`/`ghost`/`link`→same `variant`.
+- **`IconButton.tsx`** — square icon-only button, same `sm/md/lg` heights and
+  `variant`×`color` as Button. **`aria-label` is required** (enforced by types).
+- **`ButtonGroup.tsx`** — segmented group that fuses inner radii/borders. Holds
+  Button/IconButton **and** form controls (Input, Textarea, Select trigger) as
+  siblings, e.g. an Input with attached buttons (matches shadcn's ButtonGroup).
+  Props `orientation` (`horizontal`|`vertical`), `size`, `variant`, `color`
+  (propagated to child Button/IconButton; a child's own prop wins).
 
-#### Label Component (`/user-app/src/client/components/ui/Label.tsx`)
-- **Features**: Semantic label element with peer-disabled states
-- **Props**: `LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement>`
+#### Form controls (sizes align with Button)
+- **`Input.tsx`** — `size?: ControlSize`. (Native numeric `size` is omitted.)
+- **`Textarea.tsx`** — multi-line, `min-h-16`.
+- **`Label.tsx`** — shadcn-style: `flex items-center gap-2`, peer/group-disabled.
+- **`Checkbox.tsx`** — Base UI; Space toggles; supports `indeterminate`.
+- **`Switch.tsx`** — Base UI toggle.
+- **`RadioGroup.tsx`** — `RadioGroup` + `RadioGroupItem`; arrow-key roving focus.
+- **`Select.tsx`** — single component: `<Select options={[{label,value,disabled}]}
+  value onValueChange placeholder size />`. Shows the selected option's label in
+  the closed trigger (via Base UI `items`). Optional `renderItem` for custom rows.
 
-#### Card Component (`/user-app/src/client/components/ui/Card.tsx`)
-- **Subcomponents**: 
-  - `Card` - Main container
-  - `CardHeader` - Header section with padding
-  - `CardTitle` - Title text styling
-  - `CardDescription` - Description text styling
-  - `CardContent` - Content wrapper
-  - `CardFooter` - Footer section
+#### Overlays & navigation
+- **`Dialog.tsx`** — `Dialog`, `DialogTrigger`, `DialogContent` (Esc-closes,
+  focus-trapped, built-in close button), `DialogTitle`, `DialogDescription`,
+  `DialogHeader`, `DialogFooter`, `DialogClose`.
+- **`DropdownMenu.tsx`** — `DropdownMenu`, `DropdownMenuTrigger`,
+  `DropdownMenuContent`, `DropdownMenuItem`, `DropdownMenuLabel` (standalone,
+  use anywhere), `DropdownMenuSeparator`, `DropdownMenuGroup` +
+  `DropdownMenuGroupLabel` (the label MUST be inside a Group).
+- **`Tabs.tsx`** — `Tabs`, `TabsList`, `TabsTab`, `TabsPanel`.
+- **`Tooltip.tsx`** — `Tooltip`, `TooltipTrigger`, `TooltipContent`. Requires
+  **`TooltipProvider`**, already mounted once at the app root in `index.tsx`.
 
-All components use the `cn()` utility function for class merging.
+#### Display
+- **`Card.tsx`** — `Card`, `CardHeader`, `CardTitle`, `CardDescription`,
+  `CardAction` (top-right header slot), `CardContent`, `CardFooter`.
+- **`Badge.tsx`** — `variant` (`solid|soft|outline`) × `color`.
+- **`Avatar.tsx`** — `Avatar`, `AvatarImage`, `AvatarFallback`.
+- **`Separator.tsx`** — `orientation` (`horizontal`|`vertical`).
+- **`Spinner.tsx`** — inline spinner glyph (use inside controls). For page-level
+  loading use `components/LoadingSpinner` (which renders a `Spinner`).
+
+All components use the `cn()` utility for class merging. New interactive
+primitives are client components (`"use client"`). The app root sets
+`isolation: isolate` (in `index.css`) so portalled popups stack correctly.
 
 ### 3. UTILITY FUNCTIONS
 
@@ -230,8 +286,11 @@ introducing new ones:
 1. **Forms**: native `FormData` API, mirroring `LoginPage` / `SignupPage`.
 2. **Validation**: Zod on the server (inside module queries/mutations);
    lightweight client-side checks before submit.
-3. **UI Components**: `Button`, `Input`, `Label`, `Card` from
-   `src/client/components/ui/`. Avoid pulling in external UI libraries.
+3. **UI Components**: the full set in `src/client/components/ui/` (Button,
+   IconButton, ButtonGroup, Input, Textarea, Label, Checkbox, Switch,
+   RadioGroup, Select, Dialog, DropdownMenu, Tabs, Tooltip, Card, Badge,
+   Avatar, Separator, Spinner). See section 2. Interactive primitives are built
+   on `@base-ui/react`; reuse these before adding any external UI library.
 4. **Page Layout**: wrap routes in `<Page>` (sets header + `<title>` via
    the `seo` prop).
 5. **Icons**: `lucide-react`.
@@ -257,7 +316,8 @@ This is a full-stack Modelence framework application with:
 - Database and backend module patterns ready to follow
 - Authentication system in place
 - TypeScript support throughout
-- No external shadcn/ui dependency needed — custom components are already implemented
+- A shadcn-style component library built on `@base-ui/react` (accessible
+  primitives) is already implemented — reuse it before adding any UI library
 
 ### 11. MOBILE APP (Expo, optional)
 
