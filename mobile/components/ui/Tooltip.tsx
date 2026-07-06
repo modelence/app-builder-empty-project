@@ -1,9 +1,10 @@
 import * as React from 'react';
 import {
+  Platform,
+  Pressable,
   StyleSheet,
   Text,
   View,
-  Pressable,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
@@ -11,9 +12,18 @@ import { palette, radius, fontSize } from './_shared/tokens';
 
 /**
  * Tooltip mirroring the web `Tooltip` family API (`TooltipProvider` / `Tooltip` /
- * `TooltipTrigger` / `TooltipContent`). Hover doesn't exist on touch devices, so
- * the mobile equivalent reveals the tip on long-press and hides it on release or
- * tap-away. The tip is positioned above the trigger.
+ * `TooltipTrigger` / `TooltipContent`).
+ *
+ * The reveal gesture is platform-appropriate:
+ * - Native (touch): tap the trigger to toggle the tip; long-press also shows it.
+ *   Touch devices have no hover, so a discoverable tap is the reliable trigger.
+ * - Web (react-native-web): hovering shows/hides the tip, and a tap toggles it —
+ *   so it works with both a desktop pointer and touch.
+ *
+ * The trigger does NOT nest its child inside another Pressable's gesture — when
+ * the child is itself pressable (e.g. a Button) that would let the child swallow
+ * the touch and the tooltip would never open. The child is wrapped in a
+ * `pointerEvents="none"` view so the trigger's Pressable owns the gesture.
  *
  * `TooltipProvider` is a no-op passthrough kept for drop-in API compatibility.
  */
@@ -26,6 +36,7 @@ interface TooltipContextValue {
   visible: boolean;
   show: () => void;
   hide: () => void;
+  toggle: () => void;
 }
 
 const TooltipContext = React.createContext<TooltipContextValue | null>(null);
@@ -43,8 +54,13 @@ export interface TooltipProps {
 
 export function Tooltip({ children, style }: TooltipProps) {
   const [visible, setVisible] = React.useState(false);
-  const ctx = React.useMemo(
-    () => ({ visible, show: () => setVisible(true), hide: () => setVisible(false) }),
+  const ctx = React.useMemo<TooltipContextValue>(
+    () => ({
+      visible,
+      show: () => setVisible(true),
+      hide: () => setVisible(false),
+      toggle: () => setVisible((v) => !v),
+    }),
     [visible]
   );
 
@@ -59,12 +75,29 @@ export interface TooltipTriggerProps {
   children: React.ReactElement;
 }
 
-/** Wraps a single child; long-press shows the tip, release hides it. */
+/** Wraps a single child; tap toggles the tip (long-press also shows it, and on
+ * web hover reveals it). */
 export function TooltipTrigger({ children }: TooltipTriggerProps) {
-  const { show, hide } = useTooltip();
+  const { show, hide, toggle } = useTooltip();
+
+  // react-native-web forwards these to DOM mouse events; they're ignored on native.
+  const hoverProps =
+    Platform.OS === 'web'
+      ? ({ onMouseEnter: show, onMouseLeave: hide } as unknown as Record<string, unknown>)
+      : {};
+
   return (
-    <Pressable onLongPress={show} onPressOut={hide} delayLongPress={250}>
-      {children}
+    <Pressable
+      onPress={toggle}
+      onLongPress={show}
+      delayLongPress={250}
+      accessibilityRole="button"
+      accessibilityHint="Shows a tooltip"
+      {...hoverProps}
+    >
+      {/* The child cannot receive the press itself, so a pressable child (Button)
+          doesn't intercept and block the toggle. */}
+      <View pointerEvents="none">{children}</View>
     </Pressable>
   );
 }
@@ -79,7 +112,7 @@ export function TooltipContent({ children, style }: TooltipContentProps) {
   if (!visible) return null;
 
   return (
-    <View pointerEvents="none" style={styles.positioner}>
+    <View style={styles.positioner} pointerEvents="none">
       <View style={[styles.popup, style]}>
         {typeof children === 'string' ? <Text style={styles.text}>{children}</Text> : children}
         <View style={styles.arrow} />
@@ -93,9 +126,12 @@ const styles = StyleSheet.create({
   positioner: {
     position: 'absolute',
     bottom: '100%',
-    alignSelf: 'center',
+    left: 0,
+    right: 0,
     alignItems: 'center',
     marginBottom: 6,
+    // Paint the tip above sibling content on both web and native.
+    zIndex: 50,
   },
   popup: {
     borderRadius: radius.md,
