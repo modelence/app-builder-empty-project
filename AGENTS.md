@@ -1,3 +1,47 @@
+## Design Style Guide (`DESIGN.md`)
+
+`DESIGN.md` at the project root is the app's durable design brief: the aesthetic
+direction, color palette, font pairing, spacing/radius conventions, and animation
+utilities. `src/client/index.css` (Tailwind configured CSS-first via the `@theme`
+directive) is where those decisions live as code. Read `DESIGN.md` before any UI
+work, and whenever you make or change a design decision, update it to match so
+the brief always reflects the real design.
+
+**If `DESIGN.md` is still the starter placeholder (marked `STATUS: NOT
+ESTABLISHED`), the app has no design identity yet.** Before implementing any
+functionality, you MUST establish a unique design identity for this app:
+
+1. **Choose a distinctive aesthetic direction** based on the app's purpose and
+   audience. Consider the tone: is it playful, professional, editorial,
+   minimalist, bold, warm, technical, luxurious? Each app should feel different.
+2. **Create a style guide** by updating `src/client/index.css` with:
+   - A custom color palette defined as `@theme` tokens (avoid generic blue/gray
+     — pick colors that match the app's personality)
+   - A distinctive font pairing imported from Google Fonts (one display/heading
+     font + one body font — avoid Inter, Roboto, Arial)
+   - A spacing and border-radius convention that fits the aesthetic
+   - Smooth transitions and animations: define reusable animation keyframes and
+     `@theme` `--animate-*` utilities (e.g. fade-in, slide-up, staggered
+     reveals) for consistent motion across the app
+3. **Rewrite `DESIGN.md`** with the actual design brief, replacing the
+   placeholder contents entirely (including the `STATUS: NOT ESTABLISHED`
+   block): the aesthetic direction and rationale, the color palette (token
+   names + values), the font pairing, spacing/radius conventions, and the
+   animation utilities. This marks the design identity as established.
+4. **Replace the starter template completely — every starter surface, not just
+   the home page.** The default HomePage, the shared `Page` wrapper and its
+   header/nav, and the Login and Signup pages are all generic placeholders.
+   Restyle ALL of them to your chosen aesthetic in this first build — a common
+   failure is theming only HomePage and leaving the shared wrapper and auth
+   pages on the old generic gray/black template, which makes the app feel
+   half-finished. Build the UI from scratch; do not inherit styles or layout
+   patterns from the template. If a starter surface exists that isn't listed
+   here, restyle it too.
+
+Do this as your first step, before writing any feature code. `DESIGN.md` and the
+updated `src/client/index.css` must be part of the same turn's changes so they
+are committed together. All subsequent UI work must follow this style guide.
+
 ## Comprehensive Project Structure Overview
 
 ### 1. PROJECT STRUCTURE
@@ -58,6 +102,8 @@
 │       │   └── cron.ts               # Scheduled jobs
 │       └── migrations/
 │           └── createDemoUser.ts     # Seeds the sandbox demo user
+│
+├── DESIGN.md                         # Design style guide (durable design brief)
 │
 ├── Configuration Files
 │   ├── tsconfig.json                 # TypeScript 
@@ -254,7 +300,9 @@ npm test             # Run tests (not configured)
 - **Tailwind CSS v4** via the `@tailwindcss/vite` plugin. All Tailwind config
   is CSS-first in `src/client/index.css` (`@import "tailwindcss"`, `@theme`,
   `@source`, etc.) — customize the design system there.
-- **Color Scheme**: Gray, black, white primary colors; blue, red accents.
+- **Color Scheme**: Gray, black, white primary colors; blue, red accents —
+  starter defaults only, meant to be replaced when the design identity is
+  established (see "Design Style Guide (`DESIGN.md`)" at the top of this file).
 
 ### 9. SEO (TITLE, DESCRIPTION, OG TAGS)
 
