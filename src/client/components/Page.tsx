@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useSession } from 'modelence/client';
 import LoadingSpinner from '@/client/components/LoadingSpinner';
 import { Seo, type SeoProps } from '@/client/components/Seo';

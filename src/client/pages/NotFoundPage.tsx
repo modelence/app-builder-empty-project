@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Card, CardContent, CardHeader, CardTitle } from '@/client/components/ui/Card';
 import { Button } from '@/client/components/ui/Button';
 import Page from '@/client/components/Page';

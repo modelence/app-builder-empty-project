@@ -4,7 +4,7 @@ import { Button } from '@/client/components/ui/Button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/client/components/ui/Card';
 import { Input } from '@/client/components/ui/Input';
 import { Label } from '@/client/components/ui/Label';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import Page from '@/client/components/Page';
 
 export default function LoginPage() {

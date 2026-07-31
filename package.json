@@ -18,10 +18,10 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.575.0",
     "modelence": "^0.22.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "react-hot-toast": "^2.6.0",
-    "react-router-dom": "^6.30.3",
+    "react-router": "^8.3.0",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.1.13"
   },
@@ -35,6 +35,17 @@
     "typescript": "^5.3.3"
   },
   "overrides": {
-    "cookie": "^0.7.2"
+    "cookie": "^0.7.2",
+    "brace-expansion": "^5.0.9",
+    "elastic-apm-node": "^4.18.0",
+    "tsup": {
+      "esbuild": "^0.28.1"
+    },
+    "bundle-require": {
+      "esbuild": "^0.28.1"
+    },
+    "tsx": {
+      "esbuild": "^0.28.1"
+    }
   }
 }
