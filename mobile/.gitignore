@@ -1,7 +1,7 @@
 node_modules
+/dist
+/web-build
 .expo
-dist
-web-build
 *.log
 .env
 .env.local
