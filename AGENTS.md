@@ -395,6 +395,9 @@ project-root/
     │   └── (app)/
     │       ├── _layout.tsx      # headerless Stack for authenticated screens
     │       └── home.tsx         # home screen (requires auth)
+    ├── components/    # React Native UI library (RN equivalents of src/client/components/ui)
+    │   ├── LoadingSpinner.tsx   # screen-level loading state
+    │   └── ui/                  # Button, Input, Card, Dialog, … + _shared/ design tokens
     ├── babel.config.js
     └── tsconfig.json
 ```
@@ -415,6 +418,24 @@ project-root/
 - `index.ts` is a side-effect module (imported by `app/_layout.tsx`) that runs
   `configureClient` and rehydrates the auth token from AsyncStorage. It does
   NOT call `registerRootComponent`.
+- **Mobile UI components** live in `mobile/components/ui/` — React Native
+  equivalents of the web set in `src/client/components/ui/`, with a parallel
+  prop API so the two platforms read as one design system. The full set:
+  Button, IconButton, ButtonGroup, Spinner, Input, Textarea, Label, Checkbox,
+  Switch, RadioGroup, Select, Tabs, Card, Badge, Avatar, Separator, Dialog,
+  DropdownMenu, Tooltip (import from the `mobile/components/ui` barrel). Reuse
+  these before adding any external RN UI library. Key differences from web,
+  since RN has no Tailwind/Base UI/DOM:
+  - Styling is plain `StyleSheet` (no Tailwind/NativeWind). Shared design tokens
+    (palette, sizes, variants) live in `mobile/components/ui/_shared/` and mirror
+    the web tokens — edit tokens there, not per-component, to restyle globally.
+  - There is no `:hover`/`:active`; variant styles model rest + pressed states.
+  - Overlays use native primitives: `Select`, `DropdownMenu` present a Modal
+    (bottom sheet / action sheet); `Dialog` is a centered Modal; `Tooltip`
+    reveals on tap (and hover on web) rather than hover-only. `TooltipProvider`
+    is a no-op passthrough kept for API parity.
+  - `DropdownMenuTrigger` / `DialogTrigger` / `DialogClose` clone their single
+    child and inject `onPress` — pass exactly one pressable element as the child.
 - Keep `mobile/`'s `package.json` and `node_modules` separate from the web
   app's. Metro and Vite cannot share the same dependency tree.
 - The Studio sandbox runs `expo start --tunnel` automatically when the user
@@ -430,5 +451,5 @@ project-root/
   sandbox URL exposed in the studio preview (set via an env var the user
   configures in `mobile/app.json`'s `extra` field).
 - When adding shared logic, prefer plain TypeScript modules under
-  `src/shared/` and import them from both the web client and `mobile/App.tsx`.
-  Avoid React-DOM-only or Node-only imports in shared code.
+  `src/shared/` and import them from both the web client and the mobile app's
+  `app/` screens. Avoid React-DOM-only or Node-only imports in shared code.
