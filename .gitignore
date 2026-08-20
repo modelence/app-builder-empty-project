@@ -4,11 +4,11 @@ node_modules
 .pnp.js
 
 # Production
-dist
-build
+/dist
+/build
 
 # Testing
-coverage
+/coverage
 
 # Environment
 .env
