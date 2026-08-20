@@ -22,6 +22,9 @@ let authToken: string | undefined;
 
 configureClient({
   baseUrl,
+  // Token-in-body auth never uses cookies; 'include' (the default) breaks
+  // Expo Web against a server answering Access-Control-Allow-Origin: *.
+  credentials: 'omit',
   getAuthToken: () => authToken,
   setAuthToken: (token) => {
     authToken = token ?? undefined;
