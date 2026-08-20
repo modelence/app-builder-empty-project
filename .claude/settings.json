@@ -1,4 +1,12 @@
 {
+  "extraKnownMarketplaces": {
+    "modelence": {
+      "source": {
+        "source": "github",
+        "repo": "modelence/modelence"
+      }
+    }
+  },
   "enabledPlugins": {
     "modelence@modelence": true
   }
