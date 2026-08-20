@@ -29,6 +29,10 @@ node_modules
 .modelence/tmp/
 .modelence/*.tsbuildinfo
 
+# Yalc (local package linking during development)
+.yalc/
+yalc.lock
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
