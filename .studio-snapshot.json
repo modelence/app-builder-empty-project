@@ -1,0 +1,14 @@
+{
+  "$comment": "Consumed by Modelence Studio: selects the starter files inlined into the App Builder's first-prompt snapshot. include/exclude are globs matched against `git ls-files` (`**` = any depth, `*` = one path segment). `core` files must exist or no snapshot is sent; `freshness` must match or the workspace is treated as already worked on.",
+  "version": 1,
+  "include": ["AGENTS.md", "DESIGN.md", "package.json", "src/**"],
+  "exclude": ["src/client/assets/**"],
+  "core": [
+    "AGENTS.md",
+    "package.json",
+    "src/server/app.ts",
+    "src/client/index.css",
+    "src/client/pages/HomePage.tsx"
+  ],
+  "freshness": { "file": "DESIGN.md", "contains": "STATUS: NOT ESTABLISHED" }
+}
