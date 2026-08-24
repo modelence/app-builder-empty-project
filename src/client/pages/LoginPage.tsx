@@ -1,11 +1,12 @@
-import React, { useCallback } from 'react';
-import { getConfig, loginWithPassword } from 'modelence/client';
+import React, { useCallback, useState } from 'react';
+import { getConfig, loginWithPassword, MethodError } from 'modelence/client';
 import { Button } from '@/client/components/ui/Button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/client/components/ui/Card';
 import { Input } from '@/client/components/ui/Input';
 import { Label } from '@/client/components/ui/Label';
 import { Link } from 'react-router';
 import Page from '@/client/components/Page';
+import VerifyEmailNotice from '@/client/components/VerifyEmailNotice';
 
 export default function LoginPage() {
   return (
@@ -18,6 +19,7 @@ export default function LoginPage() {
 }
 
 function LoginForm() {
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const isSandboxEnv = getConfig('_system.env.type') === 'sandbox';
   const defaultDemoEmail = isSandboxEnv ? getConfig('example.modelenceDemoUsername') as string | undefined : undefined;
   const defaultDemoPassword = isSandboxEnv ? getConfig('example.modelenceDemoPassword') as string | undefined : undefined;
@@ -29,8 +31,36 @@ function LoginForm() {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     
-    await loginWithPassword({ email, password });
+    try {
+      await loginWithPassword({ email, password });
+    } catch (error) {
+      // An unverified account is a recoverable state, not a failed login:
+      // show the resend flow instead of the generic error toast.
+      if (error instanceof MethodError && error.code === 'EMAIL_NOT_VERIFIED') {
+        setUnverifiedEmail(email);
+        return;
+      }
+      throw error;
+    }
   }, []);
+
+  if (unverifiedEmail) {
+    return (
+      <VerifyEmailNotice
+        email={unverifiedEmail}
+        title="Verify your email to sign in"
+        footer={
+          <button
+            type="button"
+            onClick={() => setUnverifiedEmail(null)}
+            className="text-sm text-gray-600 underline hover:no-underline"
+          >
+            Back to sign in
+          </button>
+        }
+      />
+    );
+  }
 
   return (
     <Card className="w-full max-w-sm mx-auto bg-white">

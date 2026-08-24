@@ -6,6 +6,7 @@ import { Input } from '@/client/components/ui/Input';
 import { Label } from '@/client/components/ui/Label';
 import { Link } from 'react-router';
 import Page from '@/client/components/Page';
+import VerifyEmailNotice from '@/client/components/VerifyEmailNotice';
 import { toast } from 'react-hot-toast';
 
 export default function SignupPage() {
@@ -19,7 +20,7 @@ export default function SignupPage() {
 }
 
 function SignupForm() {
-  const [isSignupSuccess, setIsSignupSuccess] = useState(false);
+  const [signupEmail, setSignupEmail] = useState<string | null>(null);
 
   const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -36,32 +37,29 @@ function SignupForm() {
     
     try {
       await signupWithPassword({ email, password });
-      setIsSignupSuccess(true);
+      setSignupEmail(email);
     } catch (error) {
       console.error((error as Error).message);
     }
   }, []);
 
-  if (isSignupSuccess) {
+  if (signupEmail) {
     return (
-      <Card className="w-full max-w-sm mx-auto bg-white text-gray-900">
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">
-            Account created
-          </CardTitle>
-        </CardHeader>
-        
-        <CardContent className="flex flex-col items-center gap-4">
-          <p className="text-gray-600">
-            Your account has been created successfully.
-          </p>
-          <Link to="/login" className="w-full">
-            <Button className="w-full">
+      <VerifyEmailNotice
+        email={signupEmail}
+        title="Check your inbox"
+        footer={
+          <p className="text-center text-sm text-gray-600">
+            Already verified?{' '}
+            <Link
+              to="/login"
+              className="text-gray-900 underline hover:no-underline font-medium"
+            >
               Sign in
-            </Button>
-          </Link>
-        </CardContent>
-      </Card>
+            </Link>
+          </p>
+        }
+      />
     );
   }
 
