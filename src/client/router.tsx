@@ -62,6 +62,16 @@ const publicRoutes: RouteObject[] = [
     path: '/logout',
     Component: lazy(() => import('./pages/LogoutPage'))
   },
+  // Public rather than guest-only: a reset link may be opened while an old
+  // session is still active, and GuestRoute would redirect it away.
+  {
+    path: '/forgot-password',
+    Component: lazy(() => import('./pages/ForgotPasswordPage'))
+  },
+  {
+    path: '/reset-password',
+    Component: lazy(() => import('./pages/ResetPasswordPage'))
+  },
   {
     path: '*',
     Component: lazy(() => import('./pages/NotFoundPage'))

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSearchParams } from 'react-router';
+import { useLocation, useSearchParams } from 'react-router';
 import { toast } from 'react-hot-toast';
 
 /**
@@ -10,10 +10,17 @@ import { toast } from 'react-hot-toast';
  */
 export function useEmailVerificationStatus() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { pathname } = useLocation();
   const status = searchParams.get('status');
 
   useEffect(() => {
     if (status !== 'verified' && status !== 'error') {
+      return;
+    }
+
+    // The password reset landing route uses the same ?status=error param and
+    // renders its own message, so leave that page's params alone.
+    if (pathname === '/reset-password') {
       return;
     }
 
@@ -29,5 +36,5 @@ export function useEmailVerificationStatus() {
     const next = new URLSearchParams(searchParams);
     next.delete('status');
     setSearchParams(next, { replace: true });
-  }, [status, searchParams, setSearchParams]);
+  }, [status, pathname, searchParams, setSearchParams]);
 }
