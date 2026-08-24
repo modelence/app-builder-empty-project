@@ -7,16 +7,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/client/components/ui
 interface VerifyEmailNoticeProps {
   /** Address the verification link was sent to. */
   email: string;
-  /** Heading copy - differs between the post-signup and failed-login entry points. */
+  /** Differs between the post-signup and failed-login entry points. */
   title?: string;
   /** Rendered under the main copy, e.g. a link back to sign in. */
   footer?: React.ReactNode;
 }
 
 /**
- * Shown whenever an account exists but its email is not verified yet: right
- * after signup, and after a login attempt rejected with EMAIL_NOT_VERIFIED.
- * Both cases need the same recovery path, so the resend flow lives here.
+ * Shown when an account exists but is unverified: after signup, and after a
+ * login rejected with EMAIL_NOT_VERIFIED. Both share this resend flow.
  */
 export default function VerifyEmailNotice({
   email,
@@ -31,7 +30,7 @@ export default function VerifyEmailNotice({
       await resendEmailVerification({ email });
       toast.success('Verification email sent. Check your inbox.');
     } catch (error) {
-      // The global errorHandler already surfaces a toast for this.
+      // The global errorHandler already toasts this.
       console.error((error as Error).message);
     } finally {
       setIsSending(false);

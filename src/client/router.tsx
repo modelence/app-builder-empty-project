@@ -3,8 +3,7 @@ import { createBrowserRouter, Navigate, Outlet, RouteObject, useLocation, useSea
 import { useSession } from 'modelence/client';
 import { useEmailVerificationStatus } from './lib/verificationStatus';
 
-// Wraps every route so the ?status= param from the email verification link is
-// handled wherever the framework redirects back to (the site root by default).
+// Handles the email verification ?status= param on whatever route it lands on.
 function RootLayout() {
   useEmailVerificationStatus();
   return <Outlet />;
@@ -62,8 +61,8 @@ const publicRoutes: RouteObject[] = [
     path: '/logout',
     Component: lazy(() => import('./pages/LogoutPage'))
   },
-  // Public rather than guest-only: a reset link may be opened while an old
-  // session is still active, and GuestRoute would redirect it away.
+  // Public, not guest-only: a reset link may open with a stale session active,
+  // which GuestRoute would redirect away.
   {
     path: '/forgot-password',
     Component: lazy(() => import('./pages/ForgotPasswordPage'))

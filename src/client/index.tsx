@@ -36,9 +36,8 @@ renderApp({
     </QueryClientProvider>
   ),
   errorHandler: (error) => {
-    // An unverified email is handled inline by LoginPage (which offers a
-    // resend link), so suppress the generic toast to avoid a duplicate,
-    // less actionable message.
+    // LoginPage handles this inline with a resend link; skip the duplicate,
+    // less actionable toast.
     if (error instanceof MethodError && error.code === 'EMAIL_NOT_VERIFIED') {
       return;
     }

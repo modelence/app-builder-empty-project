@@ -6,9 +6,7 @@ startApp({
   modules: [exampleModule /* Add your modules here */],
 
   email: {
-    // The reset link hits /api/_internal/auth/reset-password, which stores the
-    // token in an httpOnly cookie and then redirects here. Without this it
-    // would land on the site root and the flow would dead-end.
+    // Without this the reset link redirects to the site root and dead-ends.
     passwordReset: {
       redirectUrl: '/reset-password',
     },

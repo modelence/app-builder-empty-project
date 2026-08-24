@@ -34,8 +34,7 @@ function LoginForm() {
     try {
       await loginWithPassword({ email, password });
     } catch (error) {
-      // An unverified account is a recoverable state, not a failed login:
-      // show the resend flow instead of the generic error toast.
+      // Recoverable, not a failed login: offer resend instead of an error.
       if (error instanceof MethodError && error.code === 'EMAIL_NOT_VERIFIED') {
         setUnverifiedEmail(email);
         return;

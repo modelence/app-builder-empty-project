@@ -1,28 +1,35 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, useSearchParams } from 'react-router';
 import { toast } from 'react-hot-toast';
 
 /**
- * The email verification link redirects back to the app with a `status` query
- * param (see `auth.email.verification`). By default it lands on the site root
- * with the user already signed in, so this is handled app-wide rather than on
- * the login page.
+ * Handles the `?status=` param from the email verification link. It lands on
+ * the site root by default, so this is wired app-wide, not on the login page.
  */
 export function useEmailVerificationStatus() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { pathname } = useLocation();
   const status = searchParams.get('status');
 
+  // useSearchParams returns unstable values, so the effect can re-run before
+  // the param strip commits. Latch to toast once per status.
+  const notifiedRef = useRef<string | null>(null);
+
   useEffect(() => {
     if (status !== 'verified' && status !== 'error') {
+      notifiedRef.current = null;
       return;
     }
 
-    // The password reset landing route uses the same ?status=error param and
-    // renders its own message, so leave that page's params alone.
+    // /reset-password uses the same ?status=error and shows its own message.
     if (pathname === '/reset-password') {
       return;
     }
+
+    if (notifiedRef.current === status) {
+      return;
+    }
+    notifiedRef.current = status;
 
     if (status === 'verified') {
       toast.success("You're verified — welcome!");
@@ -32,9 +39,14 @@ export function useEmailVerificationStatus() {
       );
     }
 
-    // Strip the param so a refresh doesn't re-fire the toast.
-    const next = new URLSearchParams(searchParams);
-    next.delete('status');
-    setSearchParams(next, { replace: true });
-  }, [status, pathname, searchParams, setSearchParams]);
+    // Strip the param so a refresh doesn't re-toast.
+    setSearchParams(
+      (current) => {
+        const next = new URLSearchParams(current);
+        next.delete('status');
+        return next;
+      },
+      { replace: true }
+    );
+  }, [status, pathname, setSearchParams]);
 }

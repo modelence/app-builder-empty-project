@@ -29,8 +29,7 @@ function ForgotPasswordForm() {
     setIsSending(true);
     try {
       await sendResetPasswordToken({ email });
-      // Always report success: whether the address is registered is not
-      // disclosed, to avoid leaking which accounts exist.
+      // Always report success, so we don't leak which accounts exist.
       setSentTo(email);
     } catch (error) {
       console.error((error as Error).message);

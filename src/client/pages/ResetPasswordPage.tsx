@@ -23,8 +23,7 @@ function ResetPasswordForm() {
   const [searchParams] = useSearchParams();
   const [isSaving, setIsSaving] = useState(false);
 
-  // The landing route redirects here with ?status=error when the link is
-  // invalid or expired, having never set the reset cookie.
+  // The landing route sends ?status=error for an invalid or expired link.
   const linkError = searchParams.get('status') === 'error'
     ? searchParams.get('message') || 'This password reset link is invalid or has expired.'
     : null;
@@ -43,8 +42,8 @@ function ResetPasswordForm() {
 
     setIsSaving(true);
     try {
-      // No token here on purpose: the landing route stored it in an httpOnly
-      // cookie, which the server reads. Passing it client-side is deprecated.
+      // No token: it's in an httpOnly cookie the server reads. Passing it
+      // client-side is deprecated.
       await resetPassword({ password });
       toast.success('Your password has been updated. Please sign in.');
       navigate('/login', { replace: true });
