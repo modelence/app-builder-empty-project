@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { AppProvider, useSession } from 'modelence/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useOAuthCallback } from '../lib/oauth';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,14 +27,30 @@ function RouteGuard() {
   const segments = useSegments();
   const router = useRouter();
 
+  // Redeems an OAuth deep link (cold or warm start) into a session. Mounted
+  // here so a link that launches the app is handled before anything renders.
+  const { isCompleting } = useOAuthCallback();
+
   useEffect(() => {
+    // Hold still while an OAuth code is being exchanged: the user is briefly
+    // signed out but is not "logged out", and bouncing to sign-in mid-exchange
+    // would unmount the callback route on web.
+    if (isCompleting) return;
+
     const inAuthGroup = segments[0] === '(auth)';
+    // The OAuth callback route sits outside the auth group and must stay
+    // mounted for the signed-out half of the exchange.
+    const isCallbackRoute = segments[0] === 'auth';
+    if (isCallbackRoute) return;
+
     if (!user && !inAuthGroup) {
       router.replace('/(auth)/sign-in');
     } else if (user && inAuthGroup) {
       router.replace('/(app)/home');
     }
-  }, [user, segments]);
+  }, [user, segments, isCompleting]);
+
+  if (isCompleting) return <Loading />;
 
   return <Slot />;
 }
