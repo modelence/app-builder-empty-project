@@ -1,5 +1,5 @@
 import Constants from 'expo-constants';
-import { Dimensions, PixelRatio } from 'react-native';
+import { Dimensions, Linking, PixelRatio } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { configureClient } from 'modelence/client';
 
@@ -37,6 +37,11 @@ configureClient({
     write.catch((error) => {
       console.error('Failed to persist auth token to storage', error);
     });
+  },
+  // Required for OAuth: the provider must open in the device browser.
+  // A WebView is not supported — the OAuth flow relies on the system browser.
+  openUrl: (url) => {
+    Linking.openURL(url);
   },
   getClientInfo: () => ({
     screenWidth: Dimensions.get('screen').width,
