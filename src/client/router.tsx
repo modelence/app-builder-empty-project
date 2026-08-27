@@ -1,6 +1,13 @@
 import { lazy } from 'react';
 import { createBrowserRouter, Navigate, Outlet, RouteObject, useLocation, useSearchParams } from 'react-router';
 import { useSession } from 'modelence/client';
+import { useEmailVerificationStatus } from './lib/verificationStatus';
+
+// Handles the email verification ?status= param on whatever route it lands on.
+function RootLayout() {
+  useEmailVerificationStatus();
+  return <Outlet />;
+}
 
 // For guest-only routes (login, signup) - redirects to home if already logged in
 function GuestRoute() {
@@ -54,6 +61,16 @@ const publicRoutes: RouteObject[] = [
     path: '/logout',
     Component: lazy(() => import('./pages/LogoutPage'))
   },
+  // Public, not guest-only: a reset link may open with a stale session active,
+  // which GuestRoute would redirect away.
+  {
+    path: '/forgot-password',
+    Component: lazy(() => import('./pages/ForgotPasswordPage'))
+  },
+  {
+    path: '/reset-password',
+    Component: lazy(() => import('./pages/ResetPasswordPage'))
+  },
   {
     path: '*',
     Component: lazy(() => import('./pages/NotFoundPage'))
@@ -81,13 +98,18 @@ const privateRoutes: RouteObject[] = [
 ];
 
 export const router = createBrowserRouter([
-  ...publicRoutes,
   {
-    Component: GuestRoute,
-    children: guestRoutes
-  },
-  {
-    Component: PrivateRoute,
-    children: privateRoutes
+    Component: RootLayout,
+    children: [
+      ...publicRoutes,
+      {
+        Component: GuestRoute,
+        children: guestRoutes
+      },
+      {
+        Component: PrivateRoute,
+        children: privateRoutes
+      }
+    ]
   }
 ]);

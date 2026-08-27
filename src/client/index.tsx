@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { renderApp } from 'modelence/client';
+import { MethodError, renderApp } from 'modelence/client';
 import { toast, Toaster } from 'react-hot-toast';
 import { RouterProvider } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -36,6 +36,11 @@ renderApp({
     </QueryClientProvider>
   ),
   errorHandler: (error) => {
+    // LoginPage handles this inline with a resend link; skip the duplicate,
+    // less actionable toast.
+    if (error instanceof MethodError && error.code === 'EMAIL_NOT_VERIFIED') {
+      return;
+    }
     toast.error(error.message);
   },
   loadingElement: <LoadingSpinner fullScreen />,
