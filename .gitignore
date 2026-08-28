@@ -19,7 +19,19 @@ node_modules
 
 .modelence.env
 .modelence.backup.env
-.modelence
+
+# Modelence build/cache output (committed files like project metadata
+# live at the .modelence/ root; only temp subpaths are ignored)
+.modelence/build/
+.modelence/dist/
+.modelence/cache/
+.modelence/temp/
+.modelence/tmp/
+.modelence/*.tsbuildinfo
+
+# Yalc (local package linking during development)
+.yalc/
+yalc.lock
 
 # Logs
 npm-debug.log*
