@@ -436,6 +436,52 @@ project-root/
     is a no-op passthrough kept for API parity.
   - `DropdownMenuTrigger` / `DialogTrigger` / `DialogClose` clone their single
     child and inject `onPress` — pass exactly one pressable element as the child.
+- **Expo Go constrains which packages can be added.** The Mobile preview runs
+  in stock Expo Go from the App Store, not a custom dev client, so only the
+  native modules compiled into its SDK 54 binary exist there, at the versions it
+  ships. We cannot upgrade past SDK 54: customers open the preview with the
+  store build. Pure-JS packages are always fine.
+
+  **Never run bare `npm install <pkg>` in `mobile/`.** It resolves to `latest`,
+  whose native side Expo Go does not have, and the app then boots to a blank
+  white screen with **no error** — there is nothing in the logs to debug. Use
+  the project-local Expo CLI, which pins to the installed SDK:
+
+  ```
+  cd mobile && ./node_modules/.bin/expo install <pkg>
+  ```
+
+  Invoke the binary by path. Do NOT use `npx expo` / `npm exec expo` — when the
+  local package isn't fully resolvable (exactly the case right after
+  `npm install`, since npm extracts package directories before it links bins),
+  npm silently downloads the *latest* CLI and runs it against this SDK 54
+  project.
+
+  `mobile/node_modules/expo/bundledNativeModules.json` is the name → version map
+  of everything Expo Go supports. Before adding a mobile dependency, check it:
+  - **Listed** — `expo install` it; it works in the preview.
+  - **Not listed, pure JS** (e.g. `lucide-react-native`, which only wraps
+    `react-native-svg`) — `npm install` is fine and works in the preview.
+  - **Not listed and native** — you MAY still add it, but you MUST warn the user
+    BEFORE installing and get their go-ahead. Tell them plainly that the package
+    needs native code Expo Go does not have; that the Expo Go preview for this
+    app will stop working once it is added (the QR code will no longer boot it);
+    and that from then on they need **Publish Mobile App → Android → Test build**
+    to get an installable APK. iOS has no test-build path — iOS goes through
+    TestFlight / the App Store. Offer a JS-only or Expo-SDK alternative first if
+    one exists. If they accept the tradeoff, install it and repeat the warning in
+    your closing message. Do not silently install a native package, and do not
+    refuse one the user has accepted.
+
+  `scripts/check-mobile-deps.mjs` runs automatically after any install (root and
+  `mobile/`) and warns about mismatches. It is advisory and never fails an
+  install, since a deliberate native package is a legitimate state. If it warns
+  and you did not intend a native dependency, fix it before reporting work done.
+- **`expo-file-system` (SDK 54):** the default import is the new
+  `File`/`Directory` API. The old function-style API (`readAsStringAsync`,
+  `writeAsStringAsync`, `documentDirectory`, `downloadAsync`, …) moved to
+  `expo-file-system/legacy`. Old-style calls against the default import are
+  `undefined` at runtime. Pick one API and import accordingly.
 - Keep `mobile/`'s `package.json` and `node_modules` separate from the web
   app's. Metro and Vite cannot share the same dependency tree.
 - The Studio sandbox runs `expo start --tunnel` automatically when the user

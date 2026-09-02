@@ -39,3 +39,11 @@ execSync(command, { stdio: 'inherit', cwd: 'mobile' });
 for (const cache of ['mobile/node_modules/.cache', 'mobile/.expo/dev']) {
   rmSync(cache, { recursive: true, force: true });
 }
+
+// Mobile deps just changed, and `mobile/node_modules/expo` is now populated, so
+// this is the first point where the installed SDK's bundled-module map can be
+// read. Warn about anything Expo Go cannot run — advisory only, so a deliberate
+// native package (which needs a Test build) does not fail the install.
+execSync(`node ${JSON.stringify(new URL('check-mobile-deps.mjs', import.meta.url).pathname)}`, {
+  stdio: 'inherit',
+});
