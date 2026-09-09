@@ -1,15 +1,15 @@
 import { startApp } from 'modelence/server';
 import exampleModule from '@/server/example';
 import { createDemoUser } from '@/server/migrations/createDemoUser';
-import { authErrorPage } from '@/server/authErrorPage';
 
 startApp({
   modules: [exampleModule /* Add your modules here */],
 
   auth: {
-    // OAuth errors render at the provider callback URL, outside the React app,
-    // so without this the user lands on a raw JSON body with no way back.
-    errorComponent: authErrorPage,
+    // Without this, a failed OAuth sign-in dead-ends on raw JSON at the callback
+    // URL. Not `/login`: account-linking fails while signed in, and GuestRoute
+    // would bounce those to `/` anyway.
+    oauthErrorRedirectUrl: '/',
   },
 
   email: {

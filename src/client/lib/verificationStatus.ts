@@ -1,35 +1,24 @@
-import { useEffect, useRef } from 'react';
-import { useLocation, useSearchParams } from 'react-router';
+import { useLocation } from 'react-router';
 import { toast } from 'react-hot-toast';
+import { useToastOnceFromParams } from './useToastOnceFromParams';
 
 /**
  * Handles the `?status=` param from the email verification link. It lands on
  * the site root by default, so this is wired app-wide, not on the login page.
  */
 export function useEmailVerificationStatus() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const { pathname } = useLocation();
-  const status = searchParams.get('status');
 
-  // useSearchParams returns unstable values, so the effect can re-run before
-  // the param strip commits. Latch to toast once per status.
-  const notifiedRef = useRef<string | null>(null);
-
-  useEffect(() => {
+  useToastOnceFromParams('status', (status) => {
     if (status !== 'verified' && status !== 'error') {
-      notifiedRef.current = null;
-      return;
+      return false;
     }
 
     // /reset-password uses the same ?status=error and shows its own message.
+    // Returning false leaves the param in place for that page to read.
     if (pathname === '/reset-password') {
-      return;
+      return false;
     }
-
-    if (notifiedRef.current === status) {
-      return;
-    }
-    notifiedRef.current = status;
 
     if (status === 'verified') {
       toast.success("You're verified — welcome!");
@@ -38,15 +27,5 @@ export function useEmailVerificationStatus() {
         'That verification link is invalid or has expired. Try signing in to request a new one.'
       );
     }
-
-    // Strip the param so a refresh doesn't re-toast.
-    setSearchParams(
-      (current) => {
-        const next = new URLSearchParams(current);
-        next.delete('status');
-        return next;
-      },
-      { replace: true }
-    );
-  }, [status, pathname, setSearchParams]);
+  });
 }
