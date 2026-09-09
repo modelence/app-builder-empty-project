@@ -2,10 +2,13 @@ import { lazy } from 'react';
 import { createBrowserRouter, Navigate, Outlet, RouteObject, useLocation, useSearchParams } from 'react-router';
 import { useSession } from 'modelence/client';
 import { useEmailVerificationStatus } from './lib/verificationStatus';
+import { useAuthErrorStatus } from './lib/authErrorStatus';
 
-// Handles the email verification ?status= param on whatever route it lands on.
+// Handles the email verification ?status= param, and the ?authError= param a
+// failed OAuth sign-in redirects with, on whatever route each lands on.
 function RootLayout() {
   useEmailVerificationStatus();
+  useAuthErrorStatus();
   return <Outlet />;
 }
 
