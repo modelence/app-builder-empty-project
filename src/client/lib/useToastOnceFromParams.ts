@@ -11,14 +11,14 @@ import { useSearchParams } from 'react-router';
  *
  * @param key      Param that triggers the toast; its value is the latch, so a
  *                 second distinct value toasts again.
- * @param onToast  Shows the toast. Returns nothing when the value should be
+ * @param onToast  Shows the toast. Returns `false` when the value should be
  *                 ignored entirely — the param is then left in the URL for
  *                 whoever does own it.
  * @param alsoStrip Companion params cleared alongside `key`.
  */
 export function useToastOnceFromParams(
   key: string,
-  onToast: (value: string, params: URLSearchParams) => boolean | void,
+  onToast: (value: string) => false | void,
   alsoStrip: readonly string[] = []
 ) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,10 +38,7 @@ export function useToastOnceFromParams(
       return;
     }
 
-    // Read via a fresh instance: `searchParams` is intentionally not a dep, so
-    // the captured one may be stale by the time this runs.
-    const current = new URLSearchParams(window.location.search);
-    if (onToast(value, current) === false) {
+    if (onToast(value) === false) {
       return;
     }
 
