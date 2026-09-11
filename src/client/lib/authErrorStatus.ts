@@ -14,8 +14,10 @@ import { useToastOnceFromParams } from './useToastOnceFromParams';
 const MESSAGES: Record<string, string> = {
   // The state parameter didn't match: usually a stale or reused callback.
   invalid_state: 'That sign-in link has expired. Please try again.',
-  // A mobile deep-link target that isn't in auth.mobile.redirectUrls; reported
-  // on the web callback because there's no vetted app to redirect back to.
+  // A callback whose state says 'mobile' but carries no redirect target, so
+  // there's no app deep link to report the failure to and it lands on the web.
+  // (A target rejected by auth.mobile.redirectUrls shares this code but is
+  // answered as JSON at initiation, and never reaches this page.)
   invalid_redirect: "We couldn't complete sign-in. Please try again.",
 };
 
