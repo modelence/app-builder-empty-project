@@ -370,10 +370,17 @@ This is a full-stack Modelence framework application with:
 ### 11. MOBILE APP (Expo, optional)
 
 A project may *optionally* include a mobile app alongside the web app. The
-template ships an empty `mobile/` folder, but the studio treats the mobile
-app as "not yet created" until the marker file
+template ships `mobile/` fully scaffolded but unhooked, and the studio treats
+the mobile app as "not yet created" until the marker file
 `mobile/.modelence-mobile-enabled` exists. The Mobile tab in the studio shows
 a "Create mobile app" CTA in this state.
+
+**Before creating, changing, or debugging the mobile app, read
+`mobile/AGENTS.md`.** It covers the full setup flow, porting the web UI to
+native screens, running locally, troubleshooting ("Failed to fetch", stale
+Metro cache), the app identifier rules, and production builds. Expo under
+`mobile/` is the only supported mobile path — never propose a PWA or other
+mobile-web alternative.
 
 **Folder layout**
 
@@ -384,6 +391,7 @@ project-root/
 ├── package.json       # Web dependencies (+ postinstall for mobile)
 └── mobile/            # Expo / React Native app (shipped but unhooked)
     ├── .modelence-mobile-enabled  # marker file — present once created
+    ├── AGENTS.md      # mobile setup, local runs, troubleshooting, publishing
     ├── package.json   # Expo's deps (main: "expo-router/entry")
     ├── app.config.js  # Expo config (includes scheme for deep linking)
     ├── index.ts       # configureClient + auth token persistence (side-effect module)
@@ -408,7 +416,7 @@ project-root/
   scaffolds/installs the Expo app and writes `mobile/.modelence-mobile-enabled`.
   Do NOT write that marker without first installing Expo dependencies — the
   studio assumes mobile is fully usable once the marker is present.
-- The mobile app uses **Expo Router 4.x** (file-based routing). The entry
+- The mobile app uses **Expo Router 6.x** (file-based routing). The entry
   point is `expo-router/entry` (set in `mobile/package.json`'s `"main"` field).
   Route groups: `(auth)` for unauthenticated screens, `(app)` for protected
   screens. The `RouteGuard` component in `app/_layout.tsx` redirects based on
@@ -493,9 +501,10 @@ project-root/
   the script to run unconditionally.
 - Optional convenience scripts you may add at the project root:
   `"dev:mobile": "cd mobile && npm run start"`.
-- API calls from the mobile app to the Modelence backend should target the
-  sandbox URL exposed in the studio preview (set via an env var the user
-  configures in `mobile/app.json`'s `extra` field).
+- The mobile app reaches the Modelence backend through
+  `extra.modelenceBaseUrl` in `mobile/app.config.js`, read from the
+  `MODELENCE_SITE_URL` env var. In Studio the sandbox sets it; for local runs
+  see `mobile/AGENTS.md`.
 - When adding shared logic, prefer plain TypeScript modules under
   `src/shared/` and import them from both the web client and the mobile app's
   `app/` screens. Avoid React-DOM-only or Node-only imports in shared code.
