@@ -373,14 +373,8 @@ A project may *optionally* include a mobile app alongside the web app. The
 template ships `mobile/` fully scaffolded but unhooked, and the studio treats
 the mobile app as "not yet created" until the marker file
 `mobile/.modelence-mobile-enabled` exists. The Mobile tab in the studio shows
-a "Create mobile app" CTA in this state.
-
-**Before creating, changing, or debugging the mobile app, read
-`mobile/AGENTS.md`.** It covers the full setup flow, porting the web UI to
-native screens, running locally, troubleshooting ("Failed to fetch", stale
-Metro cache), the app identifier rules, and production builds. Expo under
-`mobile/` is the only supported mobile path — never propose a PWA or other
-mobile-web alternative.
+a "Create mobile app" CTA in this state. Expo under `mobile/` is the only
+supported mobile path — never propose a PWA or other mobile-web alternative.
 
 **Folder layout**
 
@@ -391,7 +385,6 @@ project-root/
 ├── package.json       # Web dependencies (+ postinstall for mobile)
 └── mobile/            # Expo / React Native app (shipped but unhooked)
     ├── .modelence-mobile-enabled  # marker file — present once created
-    ├── AGENTS.md      # mobile setup, local runs, troubleshooting, publishing
     ├── package.json   # Expo's deps (main: "expo-router/entry")
     ├── app.config.js  # Expo config (includes scheme for deep linking)
     ├── index.ts       # configureClient + auth token persistence (side-effect module)
@@ -504,7 +497,44 @@ project-root/
 - The mobile app reaches the Modelence backend through
   `extra.modelenceBaseUrl` in `mobile/app.config.js`, read from the
   `MODELENCE_SITE_URL` env var. In Studio the sandbox sets it; for local runs
-  see `mobile/AGENTS.md`.
+  see below.
 - When adding shared logic, prefer plain TypeScript modules under
   `src/shared/` and import them from both the web client and the mobile app's
   `app/` screens. Avoid React-DOM-only or Node-only imports in shared code.
+- **App identifier.** The `bundleId` const in `mobile/app.config.js` sets both
+  `android.package` and `ios.bundleIdentifier` — never give them different
+  values. It must be reverse-DNS on a domain the user controls (Google Play
+  rejects the default `app.modelence.*`), lowercase, with each segment starting
+  with a letter and containing only letters, digits, and `_`. Editing the
+  fallback only matters before the first Cloud build; after that the platform
+  injects its stored value, so send the user to the Publish flow. Warn before
+  changing it on a published app: store listings are keyed on it permanently.
+- **Production builds** run from the Mobile tab's "Production builds" panel
+  with the user's own Expo account. Do NOT run `eas build` / `eas login` or
+  edit EAS credentials yourself.
+
+**Running locally (outside Studio)** — skip this in the Studio sandbox, which
+starts Expo and sets the backend URL itself:
+
+- Enable the app with `touch mobile/.modelence-mobile-enabled && npm install`
+  at the root; the postinstall then installs `mobile/` deps from its lockfile.
+- Create `mobile/.env` (gitignored) with `MODELENCE_SITE_URL`. Use the
+  machine's LAN IP over `http` for a simulator or device on the same Wi-Fi
+  (`localhost` on a phone is the phone itself), or a deployed
+  `https://<app>.modelence.app` URL from any network. Unset, it falls back to
+  `https://localhost:3000`, which a local `http` server rejects.
+- Run both servers: `npm run dev` at the root (needs `.modelence.env` — if
+  missing, have the user run `npx modelence setup`; never create it) and
+  `npm run dev:mobile`. Restart Expo with `--clear` after editing `.env`.
+
+**Troubleshooting**
+
+- **"Failed to fetch" / "Network request failed"** from
+  `modelence/dist/chunk-*.js` on startup means the app can't reach the backend
+  — not a code bug. Check that the root dev server is listening
+  (`lsof -nP -iTCP:3000 -sTCP:LISTEN`), then that `MODELENCE_SITE_URL` has the
+  right host and scheme for where the app runs.
+- **Metro "Unable to resolve" / "Asset not found" for a file that exists on
+  disk** is a stale Metro cache, not a broken package — don't reinstall or
+  change versions. `--clear` alone leaves the file maps; clear them all:
+  `rm -rf "$TMPDIR"/metro-cache "$TMPDIR"/metro-file-map-* mobile/.expo mobile/node_modules/.cache`.
