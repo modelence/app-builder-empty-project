@@ -14,21 +14,35 @@ import { useToastOnceFromParams } from './useToastOnceFromParams';
 const MESSAGES: Record<string, string> = {
   // The state parameter didn't match: usually a stale or reused callback.
   invalid_state: 'That sign-in link has expired. Please try again.',
-  // A callback whose state says 'mobile' but carries no redirect target, so
-  // there's no app deep link to report the failure to and it lands on the web.
-  // (A target rejected by auth.mobile.redirectUrls shares this code but is
-  // answered as JSON at initiation, and never reaches this page.)
+  // A mobile-flagged callback whose redirect target is missing or no longer
+  // passes auth.mobile.redirectUrls (re-checked at the callback), so there's no
+  // app deep link to report the failure to and it lands on the web.
   invalid_redirect: "We couldn't complete sign-in. Please try again.",
+  // The provider's email already belongs to an account that can't be linked
+  // automatically (with the default oauthAccountLinking: 'manual', a password
+  // account).
+  email_exists:
+    'This email already has an account. Please sign in with email and password.',
+  // The matching account is disabled or deleted.
+  account_inactive: 'This account is no longer active.',
+  // An onBeforeSignup hook refused the OAuth signup. Its message arrives only
+  // in the untrusted `?error=` text, so show a generic line instead.
+  signup_rejected: "We couldn't create an account with this sign-in.",
+  // Linking a provider requires a signed-in user, and the session was gone.
+  not_signed_in: 'Please sign in before linking another account.',
+  // The provider account is linked to another user, or a different account of
+  // that provider is already linked to this one.
+  link_failed: "We couldn't link that account. It may already be linked to another user.",
 };
 
 /**
  * Shown for `oauth_failed` — the framework's default code — and any code added
  * upstream that we don't know yet.
  *
- * Deliberately vague: `oauth_failed` covers everything from a provider outage
- * to "this email already has an account", and the detail that separates them
- * lives only in the untrusted `?error=` text. Guessing a specific cause from an
- * unspecific code would be worse than saying little.
+ * Deliberately vague: `oauth_failed` covers everything the codes above don't,
+ * from a provider outage to a token exchange error, and the detail that
+ * separates them lives only in the untrusted `?error=` text. Guessing a
+ * specific cause from an unspecific code would be worse than saying little.
  */
 const FALLBACK = 'Sign-in failed. Please try again.';
 
